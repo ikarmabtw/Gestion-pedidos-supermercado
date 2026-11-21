@@ -133,7 +133,118 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 ---
 
 ## P2 - Login, bloqueo a 3 intentos y modales (RIU 2)
-[Se completa cuando lo ejecuten.]
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** Ivania
+- **Hito / RIU:** Hito 2 / RIU 2
+- **Origen:** prompt nuevo, parte de la plantilla base del P1 (`js/layout.js` y `css/styles.css`).
+- **Archivos afectados:** `index.html`, `js/auth.js`, `css/styles.css`
+
+### Prompt completo
+
+```
+R - ROL
+Actúa como desarrollador frontend senior experto en HTML5 semántico, CSS3 y JavaScript puro (ES6+), con experiencia en usabilidad, accesibilidad web (WCAG AA) y flujos de autenticación en el cliente para sistemas de gestión empresarial y supermercados.
+
+E - ENFOQUE
+Estamos construyendo el Sistema de Gestión de Pedidos de la cadena de supermercados Mercado Sur. Ya existe la plantilla base HEAD / BODY / FOOT (js/layout.js y css/styles.css). Según el RIU 2, la vista Index o Home es un control de acceso mediante la funcionalidad Login, con un formulario que contiene:
+- Usuario: campo alfanumérico.
+- Contraseña: campo alfanumérico.
+- Botón Ingresar: botón para validar el ingreso de datos en los campos usuario y contraseña.
+
+Acciones del RIU 2:
+- El usuario deberá completar el formulario de Login y acceder con sus credenciales para poder ingresar al sistema.
+- En caso de no existir el usuario, el sistema deberá indicar al usuario que no existe en la base de datos del sistema.
+- En caso de fallar 3 veces, se bloqueará informando al usuario a través de un mensaje tipo modal.
+- Una vez logueado exitosamente, se debe cargar una vista tipo dashboard (views/dashboard.html), donde el BODY muestre el saludo de bienvenida y cargue las opciones del menú según el perfil, manteniendo el botón de cerrar sesión visible arriba a la derecha.
+- Cuando el usuario haga clic en el botón cerrar sesión, debe volver a cargar la vista Index o Home inicial con el formulario detallado anteriormente.
+
+Restricciones y stack:
+- Stack: HTML5, CSS3 y JavaScript puro. Sin frameworks, librerías externas ni CDN.
+- Prohibido CSS o JS embebido: nada de <style>, <script> con código en línea ni atributos onclick.
+- Prohibido usar fetch() (el proyecto se abre con doble clic o con Live Server).
+- Archivos: index.html en la raíz; css/styles.css; js/layout.js (ya existe, no lo reescribas); js/auth.js (a crear); destino al autenticar: views/dashboard.html.
+- La ruta base se lee del atributo data-raiz en <body> ("" en index.html y "../" en views/).
+- Contrato de sesión: al iniciar sesión con éxito, guardar en sessionStorage con la clave "sesion" el objeto {"usuario": "...", "nombre": "...", "perfil": "admin"|"user"} y redirigir a views/dashboard.html.
+- Base de usuarios local: sin backend ni fetch(), define en js/auth.js un arreglo comentado con exactamente estos usuarios de prueba: usuario "admin", contraseña "[clave admin]", nombre "[nombre admin]", perfil "admin"; usuario "user", contraseña "[clave user]", nombre "[nombre user]", perfil "user". Son solo datos de prueba académicos.
+- Seguridad básica: los mensajes y nombres se insertan con textContent, nunca con innerHTML. Los mensajes no exponen información sensible más allá de lo que pide el RIU 2.
+- Colores y tipografía: usa las variables CSS ya definidas en :root; no declares colores nuevos. Valores de referencia: azul #0057B8 (botón Ingresar y títulos), blanco #FFFFFF, fondo de campos y modales #CCD8E8, bordes #E5E5E5, texto principal #1F1F1F, texto secundario y placeholders #595959, rojo #DB0B00 (alertas, errores y bloqueo), gris #9E9E9E (elementos deshabilitados). Tipografía Geist local con respaldo sans-serif.
+
+C - CLARIDAD EN LA TAREA
+Programa el formulario de login en index.html, la validación, el conteo de intentos y el bloqueo a 3 fallos en js/auth.js, los modales del flujo y los estilos necesarios en css/styles.css. No programes el control de acceso por URL directa en views/ (RIU 10) ni la segregación de menús por perfil en rutas internas: eso corresponde a otro prompt. Cumple estas condiciones:
+1. Formulario de Login en index.html (RIU 2)
+    - Dentro de <main id="contenido"> muestra el formulario con campos Usuario y Contraseña, cada uno con su <label> explícito, placeholders en #595959 y fondo #CCD8E8.
+    - El botón principal "Ingresar" va en #0057B8 con texto #FFFFFF.
+    - Si al abrir index.html ya existe una sesión válida en sessionStorage, redirige a views/dashboard.html sin mostrar el formulario.
+2. Validación de credenciales y usuario inexistente (RIU 2)
+    - Al enviar el formulario, valida los datos contra la lista local de usuarios.
+    - Si el usuario no existe, informa que no existe en la base de datos del sistema, con mensaje accesible o modal.
+    - Si el usuario existe pero la contraseña no coincide, informa el error de credenciales e indica los intentos restantes.
+    - Si las credenciales son correctas y no hay bloqueo, reinicia el contador de fallos, guarda "sesion" con {"usuario", "nombre", "perfil"} y redirige a views/dashboard.html.
+3. Intentos fallidos y bloqueo a los 3 intentos (RIU 2)
+    - Registra los fallos en sessionStorage con la clave "intentos_login". El contador es único por pestaña y no distingue usuario.
+    - Al tercer fallo, bloquea el acceso en la sesión actual: deshabilita campos y botón con estilo deshabilitado (#9E9E9E) y muestra un modal informando el bloqueo por 3 intentos fallidos.
+    - Si se recarga la página estando bloqueado, el formulario sigue deshabilitado.
+4. Cierre de sesión (RIU 2)
+    - El botón #btn-logout del HEAD (ya renderizado por layout.js) elimina "sesion" con sessionStorage.removeItem("sesion") y redirige a index.html respetando data-raiz.
+    - Este comportamiento se programa en js/auth.js, que debe poder cargarse en las vistas de views/ además de index.html.
+5. Modales del flujo de login (RIU 2)
+    - Modales accesibles (role="dialog" o role="alertdialog", aria-modal="true", título, mensaje y botón de cierre) con fondo #CCD8E8, texto #1F1F1F y acento #DB0B00 para error o bloqueo, y #0057B8 para avisos.
+    - Usa nombres de clase genéricos y reutilizables (por ejemplo .modal, .modal__titulo, .modal__acciones) para que otros prompts los reutilicen.
+    - Al abrir un modal, mueve el foco a su botón de acción. Se cierra con el botón o con Escape, salvo el modal de bloqueo, que debe mantener visible el estado de bloqueo.
+6. Accesibilidad y responsivo
+    - Etiquetas semánticas, foco visible (:focus-visible) y contraste mínimo WCAG AA.
+    - Diseño centrado y adaptable en computador, tablet y móvil, sin desbordamiento horizontal.
+
+RAZONAMIENTO PASO A PASO
+Antes de escribir código, explica brevemente en una lista numerada:
+1. Cómo distingues usuario inexistente de contraseña incorrecta y cómo guardas "sesion" e "intentos_login" en sessionStorage sin usar fetch().
+2. Cómo aplicas el bloqueo al tercer fallo y cómo lo mantienes si se recarga la página.
+3. Cómo construyes y controlas los modales (apertura, cierre, Escape y foco) sin atributos onclick.
+4. Cómo haces que auth.js sirva tanto en index.html como en views/ sin errores cuando faltan elementos del formulario.
+Después de esta explicación, entrega el código.
+
+E - ESTRUCTURA (FORMATO DE SALIDA)
+Entrega cada archivo en un bloque de código separado, titulado con su ruta exacta: index.html; js/auth.js; css/styles.css (solo las reglas nuevas o actualizadas para el formulario de login, estados deshabilitados y modales). No incluyas js/layout.js. Con comentarios en español. Al final agrega: (a) una lista de supuestos técnicos (usuarios de prueba, comportamiento al recargar bloqueado y cómo limpiar sessionStorage para probar); (b) una checklist que verifique cada una de las 6 condiciones de C.
+
+T - TONO
+Profesional, claro y funcional. Explicaciones breves y directas, sin relleno. No agregues elementos que no estén justificados por los requerimientos; cuando falte una definición visual, usa soluciones convencionales de sitios de supermercados.
+
+A - AUDIENCIA
+Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales de la interfaz son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
+```
+
+### Resultado generado
+[pendiente: se completa después de ejecutar el prompt]
+
+### Problemas detectados al probarlo
+- [pendiente]
+
+### Correcciones manuales
+
+| N° | Problema | Archivo | Corrección | Por qué |
+|----|----------|---------|------------|---------|
+| 1 | | | | |
+
+### Validación
+
+| Prueba | Resultado esperado | Resultado real | OK |
+|--------|--------------------|----------------|----|
+| Abrir index.html sin sesión | Se muestra el formulario con Usuario, Contraseña e Ingresar | | |
+| Ingresar con usuario inexistente | Mensaje: el usuario no existe en la base de datos del sistema | | |
+| Ingresar con usuario válido y clave incorrecta | Mensaje de error e intentos restantes | | |
+| Ingresar con admin y su clave | Redirige a views/dashboard.html con sesión de perfil admin | | |
+| Ingresar con user y su clave | Redirige a views/dashboard.html con sesión de perfil user | | |
+| Fallar 3 veces seguidas | Modal de bloqueo y campos y botón deshabilitados | | |
+| Recargar la página estando bloqueado | El formulario sigue deshabilitado | | |
+| Abrir index.html con sesión activa | Redirige a views/dashboard.html | | |
+| Clic en Cerrar sesión | Se elimina "sesion" y vuelve a index.html | | |
+| Abrir un modal y presionar Escape | Se cierra, salvo el de bloqueo | | |
+| Abrir un modal con el teclado | El foco queda en su botón de acción | | |
+| Reducir el ancho de la ventana | Formulario y modal se adaptan sin scroll horizontal | | |
+
+---
 
 ## P3 - Perfiles, menús y bloqueo por URL directa (RIU 3, 8, 9, 10)
 - **Fecha:** [pendiente]
