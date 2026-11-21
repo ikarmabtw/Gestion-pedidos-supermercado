@@ -34,8 +34,8 @@ Reglas del equipo:
 | ID  | Hito  | RIU  | Descripción  | Estado | Ejecutado por  | 
 |-----|-------|------|--------------|--------|----------------|
 | P1  |   2   | 1    | Plantilla base HEAD/BODY/FOOT | [pendiente] | Carlos |
-| P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | [pendiente] | [asignar] |
-| P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | [pendiente] | [asignar] |
+| P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | [pendiente] |Ivania|
+| P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | [pendiente] | Matías|
 
 
 ## P1 - Plantilla base HEAD / BODY / FOOT (RIU 1)
@@ -106,6 +106,8 @@ Profesional, claro y funcional. Explicaciones breves y directas, sin relleno.No 
 
 A - AUDIENCIA
 Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales de la interfaz son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
+
+```
 
 ### Resultado generado
 [pendiente: se completa después de ejecutar el prompt]
