@@ -122,7 +122,7 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 
 ### Validación 
 
-|Prueba  | Resultado Esperado  | Resultado real  | OK  |
+|Prueba  | Resultado Esperado  | Resultado Real  | OK  |
 |--------|---------------------|-----------------|-----|
 |Abrir index.html sin sesión | Menú solo con Home | | |
 |Simular sesión user | Menú con Home, Pedidos, Pedido Ingresado | | |
@@ -136,5 +136,99 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 [Se completa cuando lo ejecuten.]
 
 ## P3 - Perfiles, menús y bloqueo por URL directa (RIU 3, 8, 9, 10)
-[Se completa cuando lo ejecuten.]
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** Matías
+- **Hito / RIU:** Hito 2 / RIU 3, RIU 8, RIU 9 y RIU 10
+- **Origen:** evolución de la plantilla base del Hito 2, ampliada para incorporar control de acceso basado en roles, segregación de menús y bloqueo por URL directa.
+- **Archivos afectados:** 'css/styles.css', 'js/layout.js', 'views/*.html (views/dashboard.html', 'views/productos.html', 'views/producto-form.html', 'views/procesamiento.html', 'views/pedidos.html' y 'views/pedidos-ingresados.html)'.
 
+### Prompt completo
+
+```
+R – ROL
+Actúa como desarrollador frontend senior experto en HTML5 semántico, CSS3 y JavaScript puro (ES6+), especializado en seguridad en el cliente (control de acceso basado en roles), accesibilidad web (WCAG AA) y arquitectura modular sin dependencias externas para sistemas de gestión empresarial y supermercados.
+
+E – ENFOQUE
+Continuamos con el desarrollo del Sistema de Gestión de Pedidos de la cadena de supermercados Mercado Sur. En la etapa anterior se construyó la plantilla base (HEAD / BODY / FOOT) y su inyección dinámica mediante js/layout.js. Ahora debemos implementar formalmente la segregación de perfiles (admin y user), la renderización estricta de menús según el rol activo y la protección activa contra acceso cruzado o navegación no autenticada mediante URL directa.
+
+- Stack: HTML5, CSS3 y JavaScript puro. Prohibido usar frameworks, librerías externas o CDN.
+- Restricciones técnicas: Prohibido CSS o JS embebido (nada de <style>, <script> con código en línea ni atributos onclick). Prohibido usar fetch() (el proyecto se ejecuta abriendo los archivos directamente en el navegador o mediante Live Server).
+- Archivos: index.html en la raíz; css/styles.css; js/layout.js; Vistas en views/: dashboard.html, pedidos.html, pedidos-ingresados.html, productos.html, producto-form.html, procesamiento.html.
+- Las rutas desde views llevan ../ (por ejemplo ../css/styles.css).
+- La ruta base se lee de un atributo data-raiz en <body> ("" en index.html y "../" en views/).
+- Contrato de sesión: la sesión se guarda en sessionStorage con la clave "sesion" y la forma {"usuario": "...", "nombre": "...", "perfil": "admin"|"user"}. layout.js solo lee esa clave; el login se programa en otro prompt.
+- Matriz de permisos por perfil (Contrato de Rutas): Sin sesión activa: Solo puede acceder a index.html. Cualquier intento de abrir una ruta dentro de views/ redirige inmediatamente a ../index.html. Perfil user (RIU 9): Acceso permitido únicamente a views/dashboard.html (Home), views/pedidos.html (Pedidos) y views/pedidos-ingresados.html (Pedidos Ingresados). Perfil admin (RIU 8): Acceso permitido únicamente a views/dashboard.html (Home), views/productos.html (Productos), views/producto-form.html (Formulario de producto) y views/procesamiento.html (Procesamiento de Pedido).
+- Sistema de Diseño (tokens existentes): Azul corporativo #0057B8 (HEAD, FOOT, botones primarios), blanco #FFFFFF (fondo de BODY y texto sobre azul), celeste claro #CCD8E8 (fondo de modales e inputs), texto principal #1F1F1F, rojo #DB0B00 (botón Cerrar sesión, alertas y botón Volver en modales). Tipografía local Geist (assets/fonts/Geist-VariableFont_wght.ttf) con respaldo sans-serif.
+
+C - CLARIDAD EN LA TAREA
+Programa el control de perfiles, el renderizado dinámico de menús en cabecera y pie de página, el cierre de sesión y el bloqueo de acceso cruzado por URL directa. No programes aún el formulario de login ni los formularios de negocio de pedidos o productos. Cumple estrictamente estas condiciones verificables:
+
+1.	Segregación de Menús en HEAD y FOOT (RIU 3, 8 y 9):
+- Al cargar cualquier vista, js/layout.js lee sessionStorage.getItem("sesion").
+- Si el perfil es "user", renderiza en el <nav aria-label="Menú principal"> y en los hipervínculos del FOOT exclusivamente: Home (dashboard.html), Pedidos (pedidos.html) y Pedidos Ingresados (pedidos-ingresados.html).
+- Si el perfil es "admin", renderiza exclusivamente: Home (dashboard.html), Productos (productos.html) y Procesamiento de Pedido (procesamiento.html).
+- El enlace correspondiente a la vista actual recibe el atributo aria-current="page" y una clase visual activa diferenciada.
+
+2.	Dashboard de Bienvenida por Perfil (RIU 2 y 3):
+- En views/dashboard.html, al detectar sesión válida, inyecta en el <main id="contenido"> el saludo en color azul #0057B8: "Bienvenido, [NOMBRE DEL USUARIO]".
+
+3.	Control de Acceso Cruzado por URL Directa (RIU 10):
+- Si un usuario autenticado con perfil "user" intenta abrir manualmente por URL views/productos.html, views/producto-form.html o views/procesamiento.html (o viceversa, un "admin" intenta abrir views/pedidos.html o views/pedidos-ingresados.html), js/auth-guard.js debe interceptar la carga antes de mostrar el contenido de <main>.
+- El sistema oculta/vacía el contenido de <main id="contenido"> y despliega un diálogo modal centrado con fondo celeste claro #CCD8E8, borde superior o acento rojo #DB0B00, accesible (role="alertdialog", aria-modal="true"), con el mensaje exacto: "No tiene permisos para acceder a esta sección" y un único botón rojo #DB0B00 con texto blanco "Volver".
+- Al hacer clic en "Volver" (o presionar Escape), redirige automáticamente a dashboard.html correspondiente a su perfil.
+
+4.	Protección de Rutas sin Sesión:
+- Si no existe la clave "sesion" en sessionStorage (o el JSON es inválido) y se intenta abrir cualquier vista dentro de views/, se redirige de inmediato a ../index.html sin renderizar el cuerpo de la página.
+
+5.	Funcionalidad del Botón Cerrar Sesión (RIU 2):
+- En todas las vistas autenticadas, el botón Cerrar sesión (id="btn-logout", fondo rojo #DB0B00, texto blanco #FFFFFF) ubicado en la esquina superior derecha del HEAD elimina "sesion" de sessionStorage mediante sessionStorage.removeItem("sesion") y redirige a index.html (respetando data-raiz).
+
+6.	Accesibilidad y Diseño Responsivo:
+- El modal de acceso denegado (RIU 10) debe atrapar el foco del teclado en el botón "Volver" al abrirse y cumplir contraste mínimo WCAG AA (#1F1F1F sobre #CCD8E8 y #FFFFFF sobre #DB0B00).
+
+RAZONAMIENTO PASO A PASO
+Antes de escribir el código, explica brevemente en una lista numerada:
+
+1.	Cómo organizas el mapa de permisos por ruta y perfil para evitar condicionales repetidos en cada HTML.
+2.	En qué orden exacto se ejecuta layout.js al cargar una vista para garantizar que nunca se filtre contenido no autorizado antes de mostrar el modal del RIU 10.
+3.	Cómo manejas la resolución de rutas relativas ("" vs "../") tanto en redirecciones como en los enlaces dinámicos del menú y del footer.
+Después de esta explicación, entrega el código.
+
+E - ESTRUCTURA (FORMATO DE SALIDA)
+Entrega cada archivo en un bloque de código separado, encabezado por su ruta exacta: css/styles.css (solo las reglas nuevas o actualizadas para estados activos del menú, tarjeta de dashboard y modal de acceso denegado); js/layout.js; views/dashboard.html (y un ejemplo representativo de vista protegida como views/productos.html mostrando cómo se vinculan ambos scripts).
+Incluye comentarios claros en español dentro del código. Al final agrega:
+
+- (a) Una lista breve de supuestos técnicos tomados (por ejemplo, cómo probar ambos perfiles manualmente desde la consola del navegador antes de conectar el login).
+- (b) Una checklist de verificación que compruebe el cumplimiento de cada una de las 6 condiciones de la sección C.
+
+T – TONO
+Profesional, claro y funcional. Explicaciones breves y directas, sin relleno. No agregues elementos que no estén justificados por los requerimentos; cuando falte una definición visual, usa soluciones convencionales de sitios de supermercados.
+
+A – AUDIENCIA
+Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales de la interfaz son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
+
+```
+
+### Resultado generado
+[pendiente: se completa después de ejecutar el prompt]
+
+### Problemas detectados al probarlo
+- [pendiente]
+
+### Correciones manuales
+|N°  | Problema  | Archivo  | Correción  | Por qué  |
+|----|-----------|----------|------------|----------|
+| 1  | | | | |
+
+### Validación 
+
+|Prueba  | Resultado Esperado  | Resultado Real  | OK  |
+|--------|---------------------|-----------------|-----|
+| Abrir una vista de `views/` sin sesión en `sessionStorage` | Redirección inmediata a `../index.html` sin mostrar contenido |  |  |
+| Simular sesión `user` en `views/dashboard.html` | Menú con Home, Pedidos, Pedidos Ingresados |  |  |
+| Simular sesión `admin` en `views/dashboard.html` | Menú con Home, Productos, Procesamiento de Pedido |  |  |
+| Abrir `views/productos.html` por URL con sesión `user` | Contenido oculto |  |  |
+| Abrir `views/pedidos.html` por URL con sesión `admin` | Contenido oculto |  |  |
+| Presionar el botón "Cerrar sesión" | Elimina `"sesion"` de `sessionStorage` y redirige a `index.html` |  |  |
+---
