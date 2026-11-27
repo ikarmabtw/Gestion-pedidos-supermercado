@@ -271,3 +271,235 @@ button:focus-visible {
         justify-self: start;
     }
 }
+
+/* Login */
+
+.login-contenido {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-contenido h1 {
+    margin-bottom: 8px;
+    color: var(--azul-marca);
+    text-align: center;
+}
+
+.login__nota {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 0 16px;
+    color: var(--texto-secundario);
+    font-size: var(--tam-texto);
+}
+
+.form-login {
+    width: 100%;
+    max-width: 320px;
+}
+
+.login__campo {
+    margin-bottom: 16px;
+}
+
+.login__campo label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--texto-principal);
+    font-size: var(--tam-texto);
+    font-weight: 600;
+}
+
+.login__entrada {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--campo);
+    border-radius: 4px;
+    background: var(--campo);
+    padding: 0 10px;
+}
+
+.login__entrada > img {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+}
+
+.login__entrada input {
+    width: 100%;
+    min-width: 0;
+    min-height: 42px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--texto-principal);
+    font-family: var(--fuente);
+    font-size: var(--tam-texto);
+}
+
+.login__entrada input::placeholder {
+    color: var(--texto-secundario);
+    opacity: 1;
+}
+
+.login__entrada:focus-within {
+    outline: 3px solid var(--azul-marca);
+    outline-offset: 2px;
+}
+
+.login__entrada input:focus-visible {
+    outline: none;
+}
+
+.btn-ver-clave {
+    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.btn-ver-clave img {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-ver-clave:focus-visible,
+.btn-ingresar:focus-visible {
+    outline-color: var(--azul-marca);
+}
+
+.login__error {
+    min-height: 0;
+    margin: 4px 0 0;
+    color: var(--rojo);
+    font-size: var(--tam-texto);
+}
+
+.login__error:empty {
+    display: none;
+}
+
+.btn-ingresar {
+    width: 100%;
+    min-height: 44px;
+    border: 0;
+    border-radius: 4px;
+    background: var(--azul-marca);
+    color: var(--blanco);
+    cursor: pointer;
+    font-family: var(--fuente);
+    font-size: var(--tam-texto);
+    font-weight: 600;
+}
+
+.login__entrada input:disabled,
+.btn-ver-clave:disabled,
+.btn-ingresar:disabled {
+    color: var(--blanco);
+    cursor: not-allowed;
+}
+
+.login__entrada--deshabilitada {
+    border-color: var(--gris-deshabilitado);
+    background: var(--gris-deshabilitado);
+}
+
+.btn-ver-clave:disabled,
+.btn-ingresar:disabled {
+    background: var(--gris-deshabilitado);
+}
+
+.login__entrada input:disabled::placeholder {
+    color: var(--blanco);
+}
+
+/* Modales */
+
+.modal-capa {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    overflow-y: auto;
+    background: rgba(31, 31, 31, 0.65);
+    padding: 16px;
+}
+
+.modal {
+    display: grid;
+    width: min(100%, 420px);
+    justify-items: center;
+    border: 2px solid var(--rojo);
+    border-radius: 8px;
+    background: var(--campo);
+    color: var(--texto-principal);
+    padding: 24px;
+    text-align: center;
+}
+
+.modal--error {
+    --modal-acento: var(--rojo);
+}
+
+.modal--aviso {
+    border-color: var(--azul-marca);
+}
+
+.modal__icono {
+    width: 40px;
+    height: 40px;
+}
+
+.modal__titulo {
+    margin: 12px 0 8px;
+    color: var(--rojo);
+    font-size: var(--tam-titulo);
+    font-weight: 600;
+}
+
+.modal--aviso .modal__titulo {
+    color: var(--azul-marca);
+}
+
+.modal__mensaje {
+    margin: 0;
+    color: var(--texto-principal);
+    font-size: var(--tam-texto);
+}
+
+.modal__acciones {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal__volver {
+    min-width: 88px;
+    min-height: 40px;
+    border: 0;
+    border-radius: 4px;
+    background: var(--rojo);
+    color: var(--blanco);
+    cursor: pointer;
+    font-family: var(--fuente);
+    font-size: var(--tam-texto);
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.modal__volver:focus-visible {
+    outline-color: var(--azul-marca);
+}

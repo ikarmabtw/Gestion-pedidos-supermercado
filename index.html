@@ -3,18 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Gestión de Pedidos</title>
+    <title>Iniciar sesión | Gestión de Pedidos</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body data-raiz="" data-vista="index">
     <header id="app-header"></header>
 
-    <main id="contenido" class="contenido-principal">
-        <h1>Inicio</h1>
-        <div class="contenedor-vacio"></div>
+    <main id="contenido" class="contenido-principal login-contenido">
+        <h1 id="titulo-login" tabindex="-1">Iniciar sesión</h1>
+        <p class="login__nota">* Campos obligatorios</p>
+        <form id="form-login" class="form-login" novalidate>
+            <div class="login__campo">
+                <label for="usuario">Usuario *</label>
+                <div class="login__entrada">
+                    <img src="assets/img/usuario.svg" alt="" aria-hidden="true">
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        placeholder="Usuario"
+                        autocomplete="username"
+                        maxlength="20"
+                        required
+                    >
+                </div>
+                <p class="login__error" id="usuario-error" aria-live="polite"></p>
+            </div>
+            <div class="login__campo">
+                <label for="clave">Contraseña *</label>
+                <div class="login__entrada">
+                    <img src="assets/img/llave.svg" alt="" aria-hidden="true">
+                    <input
+                        type="password"
+                        id="clave"
+                        name="clave"
+                        placeholder="Contraseña"
+                        autocomplete="current-password"
+                        maxlength="30"
+                        required
+                    >
+                    <button
+                        type="button"
+                        id="btn-ver-clave"
+                        class="btn-ver-clave"
+                        aria-label="Mostrar contraseña"
+                        aria-pressed="false"
+                    >
+                        <img src="assets/img/ojo.svg" alt="" aria-hidden="true">
+                    </button>
+                </div>
+                <p class="login__error" id="clave-error" aria-live="polite"></p>
+            </div>
+            <button type="submit" class="btn-ingresar">Ingresar</button>
+        </form>
     </main>
 
     <footer id="app-footer"></footer>
     <script src="js/layout.js"></script>
+    <script src="js/auth.js"></script>
 </body>
 </html>
