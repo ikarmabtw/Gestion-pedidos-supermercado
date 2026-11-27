@@ -23,13 +23,13 @@
     var opciones = [];
     if (perfil) {
         opciones.push({
-            texto: "HOME",
+            texto: "Home",
             vista: "dashboard",
             ruta: raiz + "views/dashboard.html"
         });
     } else {
         opciones.push({
-            texto: "HOME",
+            texto: "Home",
             vista: "index",
             ruta: raiz + "index.html"
         });
@@ -84,13 +84,10 @@
 
         var imagen = document.createElement("img");
         imagen.src = raiz + "assets/img/logo.svg";
-        imagen.alt = "Logo de Mercado Sur";
-
-        var textoMarca = document.createElement("span");
-        textoMarca.textContent = "MERCADO SUR";
+        imagen.alt = "Mercado Sur";
 
         marca.appendChild(imagen);
-        marca.appendChild(textoMarca);
+    
         filaSuperior.appendChild(marca);
 
         if (perfil) {
@@ -122,19 +119,23 @@
         enlacesFooter.appendChild(copyright);
 
         var listasEnlaces = document.createElement("ul");
+        listasEnlaces.className = "redes-sociales";
         [
-            { texto: "Sitio del Gobierno", href: "https://www.gov.co/" },
-            { texto: "FAO", href: "https://www.fao.org/" },
-            { texto: "Facebook", href: "https://www.facebook.com/" },
-            { texto: "Instagram", href: "https://www.instagram.com/" },
-            { texto: "LinkedIn", href: "https://www.linkedin.com/" }
+            { texto: "Facebook", href: "https://www.facebook.com/", icono: "facebook.svg"},
+            { texto: "Instagram", href: "https://www.instagram.com/", icono: "instagram.svg"},
+            { texto: "LinkedIn", href: "https://www.linkedin.com/", icono: "linkedin.svg" }
         ].forEach(function (elemento) {
             var li = document.createElement("li");
             var enlace = document.createElement("a");
             enlace.href = elemento.href;
-            enlace.textContent = elemento.texto;
             enlace.target = "_blank";
             enlace.rel = "noopener noreferrer";
+
+            var icono = document.createElement("img");
+            icono.src = raiz + "assets/img/" + elemento.icono;
+            icono.alt = elemento.texto;
+
+            enlace.appendChild(icono);
             li.appendChild(enlace);
             listasEnlaces.appendChild(li);
         });
