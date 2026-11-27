@@ -34,7 +34,8 @@ Reglas del equipo:
 | ID  | Hito  | RIU  | Descripción  | Estado | Ejecutado por  | 
 |-----|-------|------|--------------|--------|----------------|
 | P1  |   2   | 1    | Plantilla base HEAD/BODY/FOOT | Completado | Carlos |
-| P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | [pendiente] |Ivania|
+| P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | Reemplazado por P2-b |Ivania|
+| P2-b|   2   | 2    | Login, bloqueo a 3 intentos y modales| Completado | Carlos|
 | P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | [pendiente] | Matías|
 
 
@@ -240,6 +241,130 @@ A - AUDIENCIA
 Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales de la interfaz son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
 ```
 
+## P2-b - Login, bloqueo a 3 intentos y modales (RIU 2), versión corregida
+
+- **Fecha:** 27-11-2026
+- **Herramienta:** Copilot + Claude + correciones manuales
+- **Ejecutado por:** Carlos
+- **Hito / RIU:** Hito 2 / RIU 2
+- **Origen:** corrección del P2, que no se ejecutó. Se alinea con los mockups MK_01 (login), MK_02 (usuario inexistente) y MK_03 (cuenta bloqueada), y agrega las validaciones pedidas en la Evaluación 2.
+- **Cambios respecto al P2:** (1) se agrega `auth.js` a las 7 páginas, porque el cierre de sesión debe funcionar en `views/`; (2) íconos en los campos y botón para ver la contraseña, como en MK_01; (3) textos de los modales tomados de MK_02 y MK_03; (4) modal para contraseña incorrecta; (5) validación de campos vacíos y de caracteres, que no cuenta como intento; (6) manejo de `sessionStorage` corrupto; (7) aclaración de qué pasa al cerrar el modal de bloqueo.
+- **Archivos afectados:** `index.html`, `js/auth.js`, `css/styles.css`, `assets/img/` (usuario.svg, llave.svg, ojo.svg, ojo-oculto.svg, alerta.svg) y `views/*.html` (solo la etiqueta `<script>` de `auth.js`).
+
+### Prompt completo
+
+```
+R - ROL
+Actúa como desarrollador frontend senior experto en HTML5 semántico, CSS3 y JavaScript puro (ES6+), con experiencia en usabilidad, accesibilidad web (WCAG AA) y flujos de autenticación en el cliente para sistemas de gestión empresarial y supermercados.
+
+E - ENFOQUE
+Estamos construyendo el Sistema de Gestión de Pedidos de la cadena de supermercados Mercado Sur. Ya existe la plantilla base HEAD / BODY / FOOT (js/layout.js y css/styles.css), que genera el HEAD y el FOOT una sola vez y los inyecta en <header id="app-header"> y <footer id="app-footer">. Según el RIU 2, la vista Index o Home es un control de acceso mediante la funcionalidad Login, con un formulario que contiene:
+- Usuario: campo alfanumérico.
+- Contraseña: campo alfanumérico.
+- Botón Ingresar: botón para validar el ingreso de datos en los campos usuario y contraseña.
+
+Acciones del RIU 2:
+- El usuario deberá completar el formulario de Login y acceder con sus credenciales para poder ingresar al sistema.
+- En caso de no existir el usuario, el sistema deberá indicar al usuario que no existe en la base de datos del sistema.
+- En caso de fallar 3 veces, se bloqueará informando al usuario a través de un mensaje tipo modal.
+- Una vez logueado exitosamente, se carga views/dashboard.html (su contenido y el saludo se programan en otro prompt).
+- Cuando el usuario haga clic en el botón cerrar sesión, debe volver a cargar la vista Index o Home inicial con el formulario de login.
+
+Diseño de referencia (mockups aprobados en la Evaluación 2):
+- MK_01: título "Iniciar sesión", texto "* Campos obligatorios", campos "Usuario *" y "Contraseña *" con ícono a la izquierda (persona y llave) y, en la contraseña, un ícono de ojo a la derecha para mostrarla u ocultarla; botón "Ingresar" de ancho completo del formulario; formulario centrado en el BODY.
+- MK_02: modal centrado con ícono de alerta rojo, título "Usuario inexistente", mensaje "No existe el usuario en la base de datos." y botón rojo "Volver" alineado a la derecha. Detrás, la pantalla se oscurece con una capa gris semitransparente.
+- MK_03: mismo modal con título "Cuenta bloqueada" y mensaje "Su cuenta ha sido bloqueada por seguridad. Comuníquese con soporte.", con el formulario deshabilitado detrás.
+
+Restricciones y stack:
+- Stack: HTML5, CSS3 y JavaScript puro. Sin frameworks, librerías externas ni CDN.
+- Prohibido CSS o JS embebido: nada de <style>, <script> con código en línea, atributos style="" ni onclick.
+- Prohibido usar fetch() (el proyecto se abre con doble clic o con Live Server).
+- Archivos: index.html en la raíz; css/styles.css (ya existe); js/layout.js (ya existe, NO lo modifiques ni lo reescribas); js/auth.js (ya existe vacío, debes programarlo); destino al autenticar: views/dashboard.html.
+- La ruta base se lee del atributo data-raiz en <body> ("" en index.html y "../" en views/).
+- Contrato de sesión: al iniciar sesión con éxito, guardar en sessionStorage con la clave "sesion" el objeto {"usuario": "...", "nombre": "...", "perfil": "admin"|"user"} y redirigir a views/dashboard.html. layout.js lee esa clave para armar el menú.
+- Base de usuarios local: sin backend ni fetch(), define en js/auth.js un arreglo comentado con exactamente estos usuarios de prueba: usuario "admin", contraseña "admin1234", nombre "Administrador Mercado Sur", perfil "admin"; usuario "user", contraseña "user1234", nombre "User Mercado Sur", perfil "user". Son solo datos de prueba académicos.
+- Seguridad básica: los mensajes y nombres se insertan con textContent, nunca con innerHTML. Los mensajes no exponen información sensible más allá de lo que pide el RIU 2. Nunca se guarda la contraseña en sessionStorage.
+- Colores y tipografía: usa las variables CSS ya definidas en :root (--azul-marca, --blanco, --campo, --texto-principal, --texto-secundario, --rojo, --gris-deshabilitado, --fuente, --tam-titulo, --tam-texto); no declares colores nuevos. Valores de referencia: azul #0057B8 (botón Ingresar, títulos e íconos), blanco #FFFFFF, fondo de campos y modales #CCD8E8, texto principal #1F1F1F, texto secundario y placeholders #595959, rojo #DB0B00 (alertas, errores y bloqueo), gris #9E9E9E (elementos deshabilitados). Excepción única: la capa que oscurece la pantalla detrás del modal puede ser una versión semitransparente de #1F1F1F. Tipografía Geist local con respaldo sans-serif.
+
+C - CLARIDAD EN LA TAREA
+Programa el formulario de login en index.html, la validación, el conteo de intentos y el bloqueo a 3 fallos en js/auth.js, los modales del flujo, los íconos y los estilos necesarios en css/styles.css. No programes el control de acceso por URL directa en views/ (RIU 10), ni el contenido o saludo del dashboard, ni la segregación de menús por perfil: eso corresponde a otro prompt. Cumple estas condiciones:
+
+1. Formulario de Login en index.html (RIU 2, MK_01)
+    - Dentro de <main id="contenido"> reemplaza el título "Inicio" y el contenedor vacío por: <h1> "Iniciar sesión", el texto "* Campos obligatorios" y un <form id="form-login" novalidate> centrado, de ancho máximo aproximado 320px.
+    - Campo "Usuario *" y campo "Contraseña *", cada uno con su <label for> explícito, ids "usuario" y "clave", placeholders "Usuario" y "Contraseña" en #595959, fondo #CCD8E8 y atributos autocomplete="username" y autocomplete="current-password". Máximo 20 caracteres en usuario y 30 en contraseña (maxlength).
+    - Íconos: dentro del campo Usuario, a la izquierda, assets/img/usuario.svg; dentro del campo Contraseña, a la izquierda, assets/img/llave.svg; ambos como <img alt="" aria-hidden="true"> en azul #0057B8.
+    - Botón para ver la contraseña: <button type="button" id="btn-ver-clave"> dentro del campo Contraseña, a la derecha, con assets/img/ojo.svg. Con aria-label="Mostrar contraseña" y aria-pressed="false". Al activarlo (clic o teclado) el campo cambia entre type="password" y type="text", cambia el ícono a assets/img/ojo-oculto.svg y el aria-label a "Ocultar contraseña".
+    - Botón principal <button type="submit"> "Ingresar" de ancho completo del formulario, fondo #0057B8, texto #FFFFFF, peso 600.
+    - Si al abrir index.html ya existe una sesión válida en sessionStorage (JSON válido y perfil "admin" o "user"), redirige a views/dashboard.html con location.replace, sin mostrar el formulario.
+    - Si "sesion" no es un JSON válido o tiene un perfil distinto de "admin" o "user", se trata como sin sesión: se muestra el formulario y no se produce ningún error en consola.
+
+2. Validación de campos antes de revisar credenciales (RIU 2)
+    - Si Usuario o Contraseña están vacíos, muestra bajo el campo vacío un mensaje en línea en #DB0B00 ("Ingrese su usuario." o "Ingrese su contraseña."), con aria-invalid="true" en el campo y el mensaje asociado por aria-describedby, y devuelve el foco al primer campo con error.
+    - Si hay caracteres que no sean letras ni números (A-Z, a-z, 0-9), muestra bajo el campo el mensaje "Solo se permiten letras y números."
+    - Estos errores de formato NO cuentan como intento fallido y NO consultan la lista de usuarios.
+    - Los mensajes en línea se limpian cuando el usuario vuelve a escribir en el campo.
+
+3. Validación de credenciales (RIU 2)
+    - Con campos válidos, comprueba contra la lista local de usuarios.
+    - Si el usuario no existe: cuenta un intento fallido y abre el modal de error con el título "Usuario inexistente" y el mensaje "No existe el usuario en la base de datos." (MK_02).
+    - Si el usuario existe pero la contraseña no coincide: cuenta un intento fallido y abre el modal de error con el título "Credenciales incorrectas" y el mensaje "La contraseña no es correcta. Intentos restantes: N." (N = 3 menos los fallos acumulados).
+    - Si las credenciales son correctas y no hay bloqueo: reinicia el contador (elimina "intentos_login"), guarda "sesion" con {"usuario", "nombre", "perfil"} y redirige a views/dashboard.html.
+    - Al cerrar un modal de error, el campo Contraseña se vacía y el foco vuelve al campo Usuario.
+
+4. Intentos fallidos y bloqueo a los 3 intentos (RIU 2, MK_03)
+    - Registra los fallos en sessionStorage con la clave "intentos_login" (número entero). El contador es único por pestaña y no distingue usuario.
+    - Si "intentos_login" no existe, no es un número o es negativo, se interpreta como 0, sin errores. Si vale 3 o más, se interpreta como bloqueado.
+    - Al tercer fallo, bloquea el acceso en la sesión actual: deshabilita los dos campos, el botón de ver contraseña y el botón Ingresar con estilo deshabilitado (#9E9E9E), y abre SOLO el modal "Cuenta bloqueada" con el mensaje "Su cuenta ha sido bloqueada por seguridad. Comuníquese con soporte." (no se muestra además el modal de error del tercer intento).
+    - Si se recarga la página estando bloqueado, el formulario sigue deshabilitado y el modal "Cuenta bloqueada" se vuelve a mostrar al cargar.
+    - Con el formulario bloqueado no se puede enviar, ni siquiera presionando Enter.
+    - Un login correcto antes del tercer fallo reinicia el contador.
+
+5. Cierre de sesión (RIU 2)
+    - El botón #btn-logout del HEAD (ya renderizado por layout.js solo cuando hay sesión) elimina "sesion" con sessionStorage.removeItem("sesion") y redirige a index.html respetando data-raiz (location.href = raiz + "index.html").
+    - Este comportamiento se programa en js/auth.js, que debe cargarse en las 7 páginas (index.html y las 6 vistas de views/), SIEMPRE después de layout.js, porque layout.js crea el botón. En index.html la etiqueta es <script src="js/auth.js"></script> y en views/ es <script src="../js/auth.js"></script>.
+    - Cierra la sesión sin tocar "intentos_login".
+    - auth.js debe comprobar que cada elemento exista antes de usarlo (el formulario y sus campos solo existen en index.html; #btn-logout solo existe con sesión), para no generar errores en consola en las vistas de views/.
+
+6. Modales del flujo de login (RIU 2, MK_02 y MK_03)
+    - Una sola función reutilizable en auth.js que construye el modal con createElement y textContent, con parámetros: tipo ("error" o "aviso"), título, mensaje, texto del botón y si se puede cerrar con Escape.
+    - Estructura: capa oscura que cubre toda la pantalla (incluidos HEAD y FOOT) y, centrado, un <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby aria-describedby> con ícono assets/img/alerta.svg (rojo #DB0B00, alt=""), título <h2 class="modal__titulo">, mensaje <p class="modal__mensaje"> y un contenedor <div class="modal__acciones"> con un único botón rojo #DB0B00, texto blanco, "Volver", alineado a la derecha.
+    - Fondo del modal #CCD8E8, texto #1F1F1F, esquinas redondeadas. Variante .modal--error con acento #DB0B00 y variante .modal--aviso con acento #0057B8 (queda disponible para otros prompts).
+    - Usa nombres de clase genéricos y reutilizables (.modal, .modal__titulo, .modal__mensaje, .modal__acciones, .modal--error, .modal--aviso, .modal-capa) para que otros prompts los reutilicen.
+    - Al abrir un modal, mueve el foco a su botón "Volver". Mientras está abierto, el foco no puede salir del modal (como tiene un solo botón, Tab se queda en él).
+    - Se cierra con el botón "Volver" o con Escape, EXCEPTO el modal de bloqueo: ese no se cierra con Escape; solo con "Volver". Al cerrarlo con "Volver", el formulario sigue deshabilitado y el foco pasa al título "Iniciar sesión" (con tabindex="-1").
+    - Nunca puede haber dos modales abiertos a la vez.
+
+7. Accesibilidad y responsivo
+    - Etiquetas semánticas, foco visible con :focus-visible (en los campos, el botón de ver contraseña, Ingresar y Volver) y contraste mínimo WCAG AA.
+    - Los campos deshabilitados usan atributo disabled real, no solo estilo.
+    - Diseño centrado y adaptable en computador, tablet y móvil (320px mínimo), sin desbordamiento horizontal; el modal ocupa como máximo el ancho de pantalla menos un margen.
+
+8. Integración con la plantilla base
+    - No modifiques js/layout.js. No cambies el HEAD ni el FOOT. No cambies las reglas existentes de css/styles.css: solo agrega reglas nuevas al final, con un comentario de sección ("/* Login */", "/* Modales */").
+    - Íconos: crea archivos SVG simples, de un solo color, sin scripts, en assets/img/: usuario.svg (persona), llave.svg (llave), ojo.svg (ojo abierto), ojo-oculto.svg (ojo tachado), todos en azul #0057B8, y alerta.svg (círculo con signo de exclamación) en rojo #DB0B00.
+    - En las 6 vistas de views/ solo se agrega la etiqueta <script src="../js/auth.js"></script> después de la de layout.js; no se cambia nada más de ellas.
+
+RAZONAMIENTO PASO A PASO
+Antes de escribir código, explica brevemente en una lista numerada:
+1. Cómo distingues usuario inexistente de contraseña incorrecta, cómo separas los errores de formato (que no cuentan intento) de los fallos de credenciales, y cómo guardas "sesion" e "intentos_login" en sessionStorage sin usar fetch().
+2. Cómo interpretas un "intentos_login" o una "sesion" corruptos sin que se produzcan errores.
+3. Cómo aplicas el bloqueo al tercer fallo y cómo lo mantienes si se recarga la página.
+4. Cómo construyes y controlas los modales (apertura, cierre, Escape, foco y modal de bloqueo) sin atributos onclick.
+5. Cómo haces que auth.js sirva tanto en index.html como en views/ sin errores cuando faltan elementos del formulario, y por qué se carga después de layout.js.
+Después de esta explicación, entrega el código.
+
+E - ESTRUCTURA (FORMATO DE SALIDA)
+Entrega cada archivo en un bloque de código separado, titulado con su ruta exacta: index.html; js/auth.js; css/styles.css (solo las reglas nuevas, para el formulario de login, estados deshabilitados y modales); assets/img/usuario.svg; assets/img/llave.svg; assets/img/ojo.svg; assets/img/ojo-oculto.svg; assets/img/alerta.svg; y views/dashboard.html mostrando solo dónde se agrega la etiqueta <script src="../js/auth.js"></script> (indica que la misma línea va en las otras 5 vistas). No incluyas js/layout.js. Con comentarios en español. Al final agrega: (a) una lista de supuestos técnicos (usuarios de prueba, comportamiento al recargar bloqueado y cómo limpiar sessionStorage desde DevTools para probar); (b) una checklist que verifique cada una de las 8 condiciones de C.
+
+T - TONO
+Profesional, claro y funcional. Explicaciones breves y directas, sin relleno. No agregues elementos que no estén justificados por los requerimientos ni por los mockups MK_01 a MK_03; cuando falte una definición visual, usa soluciones convencionales de sitios de supermercados.
+
+A - AUDIENCIA
+Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales de la interfaz son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
+```
+
+
+
 ### Resultado generado
 [pendiente: se completa después de ejecutar el prompt]
 
@@ -254,20 +379,31 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 
 ### Validación
 
-| Prueba | Resultado esperado | Resultado real | OK |
-|--------|--------------------|----------------|----|
-| Abrir index.html sin sesión | Se muestra el formulario con Usuario, Contraseña e Ingresar | | |
-| Ingresar con usuario inexistente | Mensaje: el usuario no existe en la base de datos del sistema | | |
-| Ingresar con usuario válido y clave incorrecta | Mensaje de error e intentos restantes | | |
-| Ingresar con admin y su clave | Redirige a views/dashboard.html con sesión de perfil admin | | |
-| Ingresar con user y su clave | Redirige a views/dashboard.html con sesión de perfil user | | |
-| Fallar 3 veces seguidas | Modal de bloqueo y campos y botón deshabilitados | | |
-| Recargar la página estando bloqueado | El formulario sigue deshabilitado | | |
-| Abrir index.html con sesión activa | Redirige a views/dashboard.html | | |
-| Clic en Cerrar sesión | Se elimina "sesion" y vuelve a index.html | | |
-| Abrir un modal y presionar Escape | Se cierra, salvo el de bloqueo | | |
-| Abrir un modal con el teclado | El foco queda en su botón de acción | | |
-| Reducir el ancho de la ventana | Formulario y modal se adaptan sin scroll horizontal | | |
+Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P2b-CPxx-nombre.png`.
+
+| ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
+|----|------|------|-----|--------|--------------------|----------------|----|
+| CP01 | Verificación | Positivo | 2 | Abrir `index.html` sin sesión | Título "Iniciar sesión", "* Campos obligatorios", campos Usuario y Contraseña, botón Ingresar | | |
+| CP02 | Validación | Positivo | 2 | Comparación con el mockup `MK_01` | Íconos en los campos, ojo en la contraseña, botón de ancho completo, mismos colores | | |
+| CP03 | Validación | Positivo | 2 | Ingresar con `admin` / `admin1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `admin` en sessionStorage | | |
+| CP04 | Validación | Positivo | 2 | Ingresar con `user` / `user1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `user` | | |
+| CP05 | Validación | Negativo | 2 | Ingresar con un usuario que no existe (ej. `pepito`) | Modal "Usuario inexistente" como `MK_02`; `intentos_login` = 1 | | |
+| CP06 | Validación | Negativo | 2 | Usuario válido con clave incorrecta | Modal "Credenciales incorrectas" con "Intentos restantes: 2" (y luego 1) | | |
+| CP07 | Validación | Negativo | 2 | Enviar con ambos campos vacíos y con uno vacío | Mensajes en línea bajo cada campo vacío; sin modal; `intentos_login` no cambia | | |
+| CP08 | Validación | Negativo | 2 | Usuario con caracteres especiales (ej. `ad$min`) | Mensaje "Solo se permiten letras y números."; no cuenta intento | | |
+| CP09 | Validación | Límite | 2 | Tercer fallo seguido | Solo el modal "Cuenta bloqueada" como `MK_03`; campos y botones deshabilitados en gris | | |
+| CP10 | Validación | Límite | 2 | Dos fallos y luego un login correcto | Entra al dashboard y `intentos_login` se elimina | | |
+| CP11 | Validación | Límite | 2 | Recargar la página estando bloqueado | Formulario sigue deshabilitado y reaparece el modal de bloqueo | | |
+| CP12 | Validación | Límite | 2 | En el modal de bloqueo, presionar Escape y luego "Volver" | Escape no lo cierra; "Volver" lo cierra y el formulario sigue deshabilitado | | |
+| CP13 | Validación | Positivo | 2 | Abrir `index.html` con sesión activa | Redirige a `views/dashboard.html` sin mostrar el formulario | | |
+| CP14 | Verificación | Negativo | 2 | `sesion` = `"esto no es json"` y `{"perfil":"superadmin"}`; `intentos_login` = `"abc"` | Se ve el formulario normal, sin errores en consola | | |
+| CP15 | Validación | Positivo | 2 | Clic en Cerrar sesión desde el dashboard | Se elimina `sesion` y vuelve a `index.html` | | |
+| CP16 | Validación | Positivo | 2 | Clic en Cerrar sesión desde otra vista (ej. `views/pedidos.html`) | Se elimina `sesion` y vuelve a `index.html`; sin errores en consola | | |
+| CP17 | Validación | Positivo | 2 | Abrir un modal de error: foco, Escape y "Volver" | Foco en "Volver"; Escape y "Volver" lo cierran; el foco vuelve a Usuario | | |
+| CP18 | Validación | Positivo | 2 | Botón del ojo con mouse y con teclado | Muestra y oculta la contraseña; cambia ícono y `aria-label` | | |
+| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos | 0 resultados; consola sin errores en `index.html` y las 6 vistas | | |
+| CP20 | Validación | Límite | 2 | Anchos de 1920, 768, 375 y 320 px | Formulario y modal adaptados, sin scroll horizontal | | |
+| CP21 | Verificación | Positivo | 1 | `git diff js/layout.js` después del prompt | Sin cambios: el HEAD y el FOOT del P1 siguen intactos | | |
 
 ---
 
