@@ -33,19 +33,19 @@ Reglas del equipo:
 
 | ID  | Hito  | RIU  | Descripción  | Estado | Ejecutado por  | 
 |-----|-------|------|--------------|--------|----------------|
-| P1  |   2   | 1    | Plantilla base HEAD/BODY/FOOT | [pendiente] | Carlos |
+| P1  |   2   | 1    | Plantilla base HEAD/BODY/FOOT | Completado | Carlos |
 | P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | [pendiente] |Ivania|
 | P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | [pendiente] | Matías|
 
 
 ## P1 - Plantilla base HEAD / BODY / FOOT (RIU 1)
 
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
+- **Fecha:** 27-11-2026
+- **Herramienta:** Copilot + Claude + correcciones manuales
 - **Ejecutado por:** Carlos
 - **Hito / RIU:** Hito 2 / RIU 1
 - **Origen:** evolución del Prompt 0 de la Evaluación 2 (plantilla de diseño), reescrito para programar.
-- **Archivos afectados:** 'css/styles.css', 'js/layout.js', 'index.html', 'views/*.html'
+- **Archivos afectados:** 'css/styles.css', 'js/layout.js', 'index.html', 'views/*.html', assets/img/(logo e iconos). assets/fonts/
 
 ### Prompt completo
 
@@ -110,26 +110,51 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 ```
 
 ### Resultado generado
-[pendiente: se completa después de ejecutar el prompt]
+La IA entregó css/styles.css, js/layout.js, index.html y las 6 vistas de views/. HEAD y FOOT se generan una sola vez desde layout.js y se integran en <header id="app-header"> y <footer id="app-footer">, el menú cambia según el perfil guardado en sessionStorage y la opción de la vista actual lleva a aria=current="page".
 
 ### Problemas detectados al probarlo
-- [pendiente]
+- El texto "MERCADO SUR" aparecía duplicado junto al logo.
+- La IA agrego enlaces que no estaban en el prompt ("Sitio del Gobierno" y "FAO").
+- El logo no se veía, quedó de un tamaño de ícono cuadrado y durante la corrección, se borró por error la regla que daba el fondo azul al HEAD.
+- Las redes sociales salían como texto y el FOOT salía blanco, distinto de lo definido en MOCKUPS.
+- Al agregar íconos, el FOOT dejó de dibujarse por una variable inexistente.
+- El espacio entre los íconos de redes no cambiaba, y el menú y los íconos no quedaban alineados como en el mockup
 
 ### Correciones manuales
 |N°  | Problema  | Archivo  | Correción  | Por qué  |
 |----|-----------|----------|------------|----------|
-| 1  | | | | |
+| 1  |La IA puso el texto "MERCADO SUR" al lado del logo, y el SVG ya lo incluye (se veía duplicado)|js/layout.js | Se elimino el texto y solo se dejo la imagen con "Mercado Sur" | Evitar duplicar el nombre de la marca|
+| 2  |La IA agregó enlaces que no estaban en el prompt|js/layout.js| Se eliminaron, quedan solo las redes sociales definidas| No inventar contenido fuera de requerimiento y se busca alineación con trabajo anterior|
+| 3  |El color del foco (#FFBF47) no pertenece a la paleta| css/styles.css| Foco con el azul de marca, y blanco sobre HEAD y FOOT.| Respetar la paleta definida en Evaluación 2 y el contraste mínimo|
+| 4  |Tamaños y fuente repetidos en varias reglas| css/styles.css| Variables --tam-- titul, --tam-- texto y --fuente en :root| Mantener los valores en un solo lugar|
+| 5  |En celular el menú generaba scroll horizontal| css/styles.css| flex-wrap: wrap en las listas del menú| Evitar desborde horizontal|
+| 6  |El logo se dimensionó como icono cuadrado y quedaba diminuto|css/stlyes.css| Ancho de 150px (120 px en celulares) con alto automático|El SVG del logo es horizontal|
+| 7  |Al corregir el CSS se borró por error la regla .app-header, el HEAD quedó sin fondo azul y el logo blanco se volvió invisible| css/styles.css|Se restauró el fondo azul y el color blanco|El logo es blanco y necesita el HEAD azul|
+| 8  |Las redes sociales salían como texto y se usan íconos| js/layout.js , assets/img/| Ícono SVG blancos como imágenes con atributo alt| Coincidir con el diseño|
+| 9  | El FOOT era blanco con enlaces azules; el mockup es azul con texto blanco y tres columnas| css/styles.css|Fondo azul, enlaces balncos y grilla de 3 columnas (menú, copyright, redes)|Coherencia con diseño|
+| 10 |El FOOT no se dibujaba: el atributo alt usaba una variable que no existía (red)| js/layout.js| Se corrigió para usar la variable del ciclo (elemento)| Un error de JavaScript detenía el resto del código|
+| 11 | El gap entre íconos no cambiaba porque .enlaces-footer ul lo pisaba| css/styles.css| Selector .enlaces-footer, .redes-sociales con gap definitivo|Peso del selector mayor al orden en el archivo|
+| 12 | El menú quedaba a 24px del borde y el logo a 64px, los íconos quedaban pegados al copyright|css/styles.css|Mismo margen de 64px en HEAD y menú, justify-self: end en las redes| Alinear con diseño previo|
+| 13 |El menú decia "HOME" en mayúsculas y se definio como "Home"| js/layout.js| Texto cambiado a "Home"|Coincidir con diseño previo|
 
-### Validación 
+### Validación
 
-|Prueba  | Resultado Esperado  | Resultado Real  | OK  |
-|--------|---------------------|-----------------|-----|
-|Abrir index.html sin sesión | Menú solo con Home | | |
-|Simular sesión user | Menú con Home, Pedidos, Pedido Ingresado | | |
-|Simular sesión admin | Menú con Home, Productos, Procesamiento de Pedido | | |
-|Comparar HEAD y FOOT entre dos vistas | Idénticos | | |
-|Abrir una vista desde views/ | CSS y JS cargan (sin errores de consola) | | |
-|Reducir el ancho de la ventana | Menú se adapta | | |
+Las capturas de cada prueba están guardadas en la carpeta `docs/evidencias/`.
+
+| ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
+|----|------|------|-----|--------|--------------------|----------------|----|
+| CP01 | Verificación | Positivo | 1 | HEAD y FOOT idénticos en las 7 vistas | Idénticos; el HEAD y el FOOT salen de un solo archivo | Las 7 vistas cargan el mismo `js/layout.js` (1 coincidencia por archivo en la búsqueda). En las capturas de 6 vistas, el HEAD (logo, menú, botón Cerrar sesión) y el FOOT (menú, copyright, íconos) tienen la misma estructura y estilo; solo cambian las opciones del menú según el perfil. capturas en docs/evidencias/| Sí |
+| CP02 | Verificación | Positivo | 1 | Sin CSS ni JS embebido (búsqueda de `<style`, `onclick`, `style="` y scripts con código) | 0 resultados en los `.html` | La búsqueda dio 0 resultados en los archivos `.html`: no hay CSS ni JS embebido. | Sí |
+| CP03 | Verificación | Positivo | 1 | Sin errores en la consola, 7 vistas y 3 sesiones | Ningún mensaje rojo | La consola del navegador no muestra errores. | Sí |
+| CP04 | Verificación | Positivo | 1 | Recursos cargan desde `views/` (pestaña Network) | Logo, íconos, CSS, JS y fuente en estado 200 | Todos los recursos cargan correctamente desde `views/`. | Sí |
+| CP05 | Validación | Positivo | 1 | Comparación con el mockup `MK_01` | Logo arriba, Home debajo, footer con menú, copyright e íconos a la derecha, mismos colores | La página coincide con el mockup `MK_01`: logo arriba, Home debajo, footer con menú, copyright e íconos a la derecha, con los mismos colores. | Sí |
+| CP06 | Validación | Positivo | 9 | Menú con sesión `user` | Home, Pedidos, Pedidos Ingresados y botón Cerrar sesión | El menú muestra Home, Pedidos y Pedidos Ingresados; botón rojo Cerrar sesión arriba a la derecha. | Sí |
+| CP07 | Validación | Positivo | 8 | Menú con sesión `admin` | Home, Productos, Procesamiento de Pedido y botón Cerrar sesión | El menú muestra Home, Productos y Procesamiento de Pedido; botón rojo Cerrar sesión arriba a la derecha. | Sí |
+| CP08 | Validación | Positivo | 1 | Menú sin sesión | Solo Home y sin botón Cerrar sesión | Solo aparece Home y no hay botón Cerrar sesión. | Sí |
+| CP09 | Validación | Negativo | 8 y 9 | Cada perfil no ve opciones del otro (HEAD y FOOT) | Sin opciones cruzadas | Con `user` no aparecen Productos ni Procesamiento de Pedido; con `admin` no aparecen Pedidos ni Pedidos Ingresados, ni en el HEAD ni en el FOOT. | Sí |
+| CP10 | Verificación | Negativo | 1 | Sesión corrupta (`"esto no es json"`) y perfil inválido (`{"perfil":"superadmin"}`) | La página no se rompe y se ve como sin sesión | La página no se rompió con la sesión corrupta ni con el perfil inválido. | Sí |
+| CP11 | Validación | Límite | 1 | Anchos de 1920, 768, 375, 320, 701 y 700 px | Sin scroll horizontal, menú que se acomoda y FOOT en una columna en móvil | No aparece scroll horizontal en los anchos probados; el menú se acomoda y en móvil el FOOT pasa a una sola columna. | Sí |
+| CP12 | Validación | Positivo | 1 | Foco visible al navegar con `Tab` | Borde blanco visible en HEAD y FOOT | Al navegar con `Tab` se ve el borde de foco blanco en el HEAD y el FOOT. | Sí |
 ---
 
 ## P2 - Login, bloqueo a 3 intentos y modales (RIU 2)
@@ -167,7 +192,7 @@ Restricciones y stack:
 - Archivos: index.html en la raíz; css/styles.css; js/layout.js (ya existe, no lo reescribas); js/auth.js (a crear); destino al autenticar: views/dashboard.html.
 - La ruta base se lee del atributo data-raiz en <body> ("" en index.html y "../" en views/).
 - Contrato de sesión: al iniciar sesión con éxito, guardar en sessionStorage con la clave "sesion" el objeto {"usuario": "...", "nombre": "...", "perfil": "admin"|"user"} y redirigir a views/dashboard.html.
-- Base de usuarios local: sin backend ni fetch(), define en js/auth.js un arreglo comentado con exactamente estos usuarios de prueba: usuario "admin", contraseña "[clave admin]", nombre "[nombre admin]", perfil "admin"; usuario "user", contraseña "[clave user]", nombre "[nombre user]", perfil "user". Son solo datos de prueba académicos.
+- Base de usuarios local: sin backend ni fetch(), define en js/auth.js un arreglo comentado con exactamente estos usuarios de prueba: usuario "admin", contraseña "admin1234", nombre "Administrador Mercado Sur", perfil "admin"; usuario "user", contraseña "user1234", nombre "User Mercado Sur", perfil "user". Son solo datos de prueba académicos.
 - Seguridad básica: los mensajes y nombres se insertan con textContent, nunca con innerHTML. Los mensajes no exponen información sensible más allá de lo que pide el RIU 2.
 - Colores y tipografía: usa las variables CSS ya definidas en :root; no declares colores nuevos. Valores de referencia: azul #0057B8 (botón Ingresar y títulos), blanco #FFFFFF, fondo de campos y modales #CCD8E8, bordes #E5E5E5, texto principal #1F1F1F, texto secundario y placeholders #595959, rojo #DB0B00 (alertas, errores y bloqueo), gris #9E9E9E (elementos deshabilitados). Tipografía Geist local con respaldo sans-serif.
 
