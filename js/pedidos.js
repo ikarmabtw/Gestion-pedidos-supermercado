@@ -135,7 +135,13 @@
     }
 
     function enfocarPrimerCampoConError(idAlternativo) {
-        var id = primerCampoConError() || idAlternativo;
+        var id = primerCampoConError();
+        if (!id && window.PedidoDetalle &&
+            typeof window.PedidoDetalle.enfocarError === "function" &&
+            window.PedidoDetalle.enfocarError()) {
+            return;
+        }
+        id = id || idAlternativo;
         if (id) {
             document.getElementById(id).focus();
         }
