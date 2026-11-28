@@ -1283,8 +1283,8 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P6-
 
 ## P7 - Vista Pedidos Ingresados: tabla, selección única y eliminar (RIU 5 y 9)
 
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
+- **Fecha:** 28-11-2026
+- **Herramienta:** Copilot + Claude + correciones manuales 
 - **Ejecutado por:** [por asignar]
 - **Hito / RIU:** Hito 3 / RIU 5 y RIU 9
 - **Origen:** prompt nuevo. Lee los pedidos que guarda el P5 (con el detalle del P6) a través de `js/data.js`. Se alinea con MK_10, MK_11 y MK_12. El botón Editar solo navega a `pedidos.html?editar=[número]`; la carga del formulario es del P8.
@@ -1302,9 +1302,9 @@ Continuamos el Sistema de Gestión de Pedidos de la cadena de supermercados Merc
 - Login y sesión: index.html y js/auth.js. Contrato de sesión: sessionStorage["sesion"] = {"usuario": "...", "nombre": "...", "perfil": "admin" | "user"}. Usuarios de prueba: admin / admin1234 y user / user1234 (el user se llama "User Mercado Sur"). NO se modifica.
 - Control de acceso: js/auth-guard.js (en el <head> de las 6 vistas, sin defer) oculta la página hasta confirmar el acceso, redirige si no hay sesión y bloquea con el modal "Acceso restringido" a un perfil que abre la vista del otro (el perfil user solo puede usar dashboard, pedidos y pedidos-ingresados). NO se modifica.
 - Cada vista de views/ tiene <body data-raiz="../" data-vista="..."> (dashboard, pedidos, pedidos-ingresados, productos, producto-form o procesamiento) y contiene <header id="app-header">, <main id="contenido" class="contenido-principal"> y <footer id="app-footer">. Los scripts van al final del <body>: primero layout.js y luego auth.js, y después los propios de la vista.
-- css/styles.css ya define los tokens (--azul-marca #0057B8, --blanco, --campo #CCD8E8, --texto-principal #1F1F1F, --texto-secundario #595959, --rojo #DB0B00, --gris-deshabilitado #9E9E9E, --tam-titulo 20px, --tam-texto 14px, fuente Geist local) y estas clases: .contenido-principal, .login__campo (etiqueta + campo), .login__entrada (campo con ícono a la izquierda y borde azul al enfocar), .login__error, .login__nota ("* Campos obligatorios"), .modal-capa, .modal, .modal__icono, .modal__titulo, .modal__mensaje, .modal__acciones, .panel-encabezado y .panel-bienvenida.
-- Íconos existentes en assets/img/: alerta.svg, usuario.svg, llave.svg, ojo.svg, ojo-oculto.svg, logo.svg, facebook.svg, instagram.svg y linkedin.svg.
-- views/pedidos-ingresados.html hoy solo tiene el <h1>Pedidos Ingresados</h1> y un <div class="contenedor-vacio">; sus scripts al final son layout.js, auth.js, data.js, validaciones.js y modal.js. js/pedidos-ingresados.js no existe todavía.
+- css/styles.css ya define los tokens (--azul-marca #0057B8, --blanco, --campo #CCD8E8, --texto-principal #1F1F1F, --texto-secundario #595959, --rojo #DB0B00, --gris-deshabilitado #9E9E9E, --tam-titulo 20px, --tam-texto 14px, fuente Geist local) y estas clases: .contenido-principal, .login__campo (etiqueta + campo), .login__entrada (campo con ícono a la izquierda y borde azul al enfocar), .login__error, .login__nota ("* Campos obligatorios"), .modal-capa, .modal, .modal__icono, .modal__titulo, .modal__mensaje, .modal__acciones, .panel-encabezado y .panel-bienvenida. También existen las reglas de las vistas anteriores (.form-pedido*, .campo-ayuda, .tooltip-ayuda, .pedido-acciones, .tabla-detalle*, .detalle-* y .selector-producto*): NO se modifican. De ellas se reutilizan .pedido-acciones (botones alineados a la derecha) y .detalle-solo-lectores (oculta texto solo visualmente, para lectores de pantalla).
+- Íconos existentes en assets/img/: alerta.svg, usuario.svg, llave.svg, ojo.svg, ojo-oculto.svg, logo.svg, facebook.svg, instagram.svg, linkedin.svg, exito.svg, tarjeta-id.svg, telefono.svg, correo.svg, ubicacion.svg, ayuda.svg, flecha-abajo.svg y flecha-arriba.svg.
+- views/pedidos-ingresados.html hoy solo tiene el <h1>Pedidos Ingresados</h1> y un <div class="contenedor-vacio"> (un marcador que se elimina); sus scripts al final son layout.js, auth.js, data.js, validaciones.js y modal.js. js/pedidos-ingresados.js no existe todavía.
 - La vista Pedidos (P5 y P6) guarda los pedidos con Datos.guardarPedido; esta vista los lee con Datos.listarPedidos().
 
 Módulos compartidos que entregó el P4 (ya existen; NO se reescriben ni se modifican):
@@ -1329,7 +1329,7 @@ Requerimientos que se implementan (texto del documento de requerimientos):
 
 Mockups de referencia:
 - MK_10 (sin selección): título "Pedidos Ingresados"; tabla con encabezado azul y columnas [casilla] · "Número Pedido" · "Nombre Completo" · "Correo" · "Teléfono" · "Total" (Total alineado a la derecha, en formato CLP). Debajo de la tabla el texto de ayuda gris "Seleccione un pedido para editar o eliminar". A la derecha, los botones Editar y Eliminar DESHABILITADOS (grises).
-- MK_11 (con una fila seleccionada): la casilla marcada, la fila resaltada en celeste (#CCD8E8), y los botones Editar (azul) y Eliminar (rojo) habilitados.
+- MK_11 (con una fila seleccionada): la casilla marcada (relleno azul con una marca blanca), la fila resaltada en celeste (#CCD8E8), el texto de ayuda oculto y los botones Editar (azul) y Eliminar (rojo) habilitados, a la derecha.
 - MK_12 (modal de eliminación): ícono de alerta, título "Eliminar pedido", mensaje "¿Está seguro de que desea eliminar el Pedido N° 1001 – María Pérez?" y botones Cancelar y Confirmar.
 
 Restricciones técnicas:
@@ -1344,22 +1344,23 @@ Restricciones técnicas:
 C – CLARIDAD EN LA TAREA
 Programa la vista Pedidos Ingresados. No modifiques js/layout.js, js/auth.js, js/auth-guard.js ni los módulos compartidos del P4. No programes la carga del pedido en el formulario (P8). Usa window.Datos, window.Validaciones y window.Modal. Cumple estas condiciones verificables:
 
-1. views/pedidos-ingresados.html (completo): se mantienen <body data-raiz="../" data-vista="pedidos-ingresados">, el header, el footer, auth-guard.js en el <head> y los scripts layout.js, auth.js, data.js, validaciones.js y modal.js; se agrega pedidos-ingresados.js al final. Dentro de <main id="contenido" class="contenido-principal">: <h1 id="titulo-ingresados" tabindex="-1">Pedidos Ingresados</h1>, un contenedor con scroll horizontal propio (por si la pantalla es angosta) que envuelve la <table>, el texto de ayuda <p id="ayuda-seleccion"> y <div class="pedido-acciones"> con <button type="button" id="btn-editar" class="boton boton--azul" disabled>Editar</button> y <button type="button" id="btn-eliminar" class="boton boton--rojo" disabled>Eliminar</button>, alineados a la derecha.
+1. views/pedidos-ingresados.html (completo): se mantienen <body data-raiz="../" data-vista="pedidos-ingresados">, el header, el footer, auth-guard.js en el <head> y los scripts layout.js, auth.js, data.js, validaciones.js y modal.js; se agrega pedidos-ingresados.js al final. Dentro de <main id="contenido" class="contenido-principal">: <h1 id="titulo-ingresados" tabindex="-1">Pedidos Ingresados</h1>, un contenedor con scroll horizontal propio (por si la pantalla es angosta) que envuelve la <table>, el texto de ayuda <p id="ayuda-seleccion"> y <div class="pedido-acciones"> con <button type="button" id="btn-editar" class="boton boton--azul" disabled>Editar</button> y <button type="button" id="btn-eliminar" class="boton boton--rojo" disabled>Eliminar</button>, alineados a la derecha. Elimina el <div class="contenedor-vacio"> (era solo un marcador).
 
-2. Tabla (se arma con createElement en js/pedidos-ingresados.js, con <caption> oculto visualmente "Lista de pedidos ingresados", <thead> y <tbody>):
-- Encabezado azul #0057B8 con texto blanco: una primera columna vacía para las casillas (con <th scope="col"> y texto oculto "Seleccionar") y "Número Pedido", "Nombre Completo", "Correo", "Teléfono" y "Total" (este último alineado a la derecha).
+2. Tabla (se arma con createElement en js/pedidos-ingresados.js, con <caption> oculto visualmente "Lista de pedidos ingresados", <thead> y <tbody>). Para ocultar texto solo visualmente reutiliza la clase existente .detalle-solo-lectores; no crees otra:
+- Encabezado azul #0057B8 con texto blanco: una primera columna vacía para las casillas (con <th scope="col"> y el texto "Seleccionar" oculto con .detalle-solo-lectores) y "Número Pedido", "Nombre Completo", "Correo", "Teléfono" y "Total" (este último alineado a la derecha).
 - Una fila por cada pedido de Datos.listarPedidos(), en orden ascendente por número. Cada fila tiene un <input type="checkbox"> con aria-label "Seleccionar pedido [número]" y las celdas con número, nombre, correo, teléfono y total con Validaciones.formatearCLP.
 - Si no hay pedidos, la tabla muestra una sola fila con el texto "No hay pedidos ingresados." ocupando todas las columnas, y los botones quedan deshabilitados.
 - Líneas de la tabla con --borde-tabla y la fila resaltada con --campo (tokens existentes).
+- La tabla tiene un min-width de 640 px (para que en pantallas angostas se desplace dentro de su contenedor) y sus celdas parten los textos largos (overflow-wrap: anywhere) para que un nombre o un correo de 255 caracteres no ensanche la tabla.
 
 3. Selección de una sola fila (RIU 5):
 - La selección se hace solo con las casillas (no con un clic en la fila). Al marcar una casilla, cualquier otra que estuviera marcada se desmarca, de modo que nunca haya dos filas seleccionadas. Al desmarcar la casilla seleccionada, no queda ninguna fila seleccionada.
-- La fila seleccionada se resalta con el fondo --campo (MK_11) y su casilla tiene aria-checked/estado marcado.
-- Los botones Editar y Eliminar están deshabilitados (disabled) hasta que haya una fila seleccionada y se vuelven a deshabilitar si se quita la selección. El texto de ayuda "Seleccione un pedido para editar o eliminar" se ve mientras no haya selección y se oculta cuando la hay.
+- La fila seleccionada se resalta con el fondo --campo (MK_11). El estado marcado es el nativo de la casilla (checked); no agregues aria-checked a un <input type="checkbox"> nativo.
+- Los botones Editar y Eliminar están deshabilitados (disabled) hasta que haya una fila seleccionada y se vuelven a deshabilitar si se quita la selección. El texto de ayuda "Seleccione un pedido para editar o eliminar" se ve solo cuando hay pedidos y ninguno está seleccionado; se oculta cuando hay una selección o cuando la tabla está vacía.
 
 4. Botón Eliminar:
 - Abre Modal.mostrar({tipo: "confirmar", titulo: "Eliminar pedido", mensaje: "¿Está seguro de que desea eliminar el Pedido N° [número] – [nombre]?"}) con los datos del pedido seleccionado (el guion es " – ", con espacios).
-- Con Cancelar o Escape no pasa nada y la selección se mantiene. Con Confirmar se llama a Datos.eliminarPedido(número), se vuelve a dibujar la tabla (sin selección y con los botones deshabilitados) y el foco pasa al título "Pedidos Ingresados".
+- Con Cancelar o Escape no pasa nada y la selección se mantiene. Con Confirmar se llama a Datos.eliminarPedido(número) y se vuelve a dibujar la tabla (sin selección y con los botones deshabilitados) aunque la función devuelva false (por ejemplo, si el pedido ya no existe); el foco pasa al título "Pedidos Ingresados".
 
 5. Botón Editar (solo la parte de esta vista; la carga del formulario es del P8): al pulsarlo, navega a pedidos.html agregando el número del pedido seleccionado, es decir, location.href = "pedidos.html?editar=" + número. No guardes nada en sessionStorage ni en localStorage para esto.
 
@@ -1367,7 +1368,7 @@ Programa la vista Pedidos Ingresados. No modifiques js/layout.js, js/auth.js, js
 
 7. js/pedidos-ingresados.js (completo): función autoejecutable con "use strict" que solo actúa si data-vista es "pedidos-ingresados". Funciones pequeñas con nombres claros (por ejemplo dibujarTabla, seleccionarFila, actualizarBotones). Los datos se leen de Datos al cargar la vista y después de cada eliminación.
 
-8. css/styles.css: agrega solo las reglas nuevas necesarias (clases que empiecen con .tabla-pedidos y .ayuda-seleccion) y reutiliza .boton, .boton--azul, .boton--rojo, .pedido-acciones, los tokens y el anillo de foco existente. Las casillas deben verse claramente (borde azul, 20 × 20 px como mínimo para el área de clic) y tener foco visible. El texto de ayuda con --texto-secundario.
+8. css/styles.css: agrega solo las reglas nuevas necesarias (clases que empiecen con .tabla-pedidos y .ayuda-seleccion) al final del archivo, sin cambiar ninguna regla existente, y reutiliza .boton, .boton--azul, .boton--rojo, .pedido-acciones, .detalle-solo-lectores, los tokens y el anillo de foco existente. Las casillas deben verse claramente (borde azul, 20 × 20 px como mínimo para el área de clic, relleno azul con marca blanca al estar marcadas) y tener foco visible. El texto de ayuda con --texto-secundario.
 
 9. Accesibilidad y responsivo:
 - Contraste mínimo WCAG AA. Los botones deshabilitados usan el atributo disabled (no solo el color). Cada casilla tiene un nombre accesible.
@@ -1378,7 +1379,7 @@ Programa la vista Pedidos Ingresados. No modifiques js/layout.js, js/auth.js, js
 RAZONAMIENTO PASO A PASO
 Antes de escribir el código, explica brevemente en una lista numerada:
 1. Cómo dibujas la tabla con createElement y cómo la vuelves a dibujar después de eliminar.
-2. Cómo garantizas que nunca haya más de una fila seleccionada y cómo actualizas los botones y el texto de ayuda.
+2. Cómo garantizas que nunca haya más de una fila seleccionada y cómo actualizas los botones y el texto de ayuda (incluido el caso de tabla vacía).
 3. Cómo armas el mensaje del modal de eliminación con el número y el nombre.
 4. Cómo pasas el número del pedido a la vista Pedidos sin usar almacenamiento.
 Después de esta explicación, entrega el código.
