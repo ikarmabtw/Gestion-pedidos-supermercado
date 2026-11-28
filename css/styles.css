@@ -501,3 +501,37 @@ button:focus-visible {
 .modal__volver:focus-visible {
     outline-color: var(--azul-marca);
 }
+
+/* Encabezado del dashboard */
+
+.panel-encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.panel-encabezado > * {
+    min-width: 0;
+}
+
+.panel-encabezado h1 {
+    margin: 0;
+}
+
+.panel-bienvenida {
+    overflow-wrap: anywhere;
+    margin: 0;
+    color: var(--azul-marca);
+    font-size: var(--tam-titulo);
+    font-weight: 400;
+}
+
+@media (max-width: 700px) {
+    .panel-encabezado {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
