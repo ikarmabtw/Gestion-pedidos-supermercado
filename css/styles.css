@@ -632,6 +632,7 @@ button:focus-visible {
     grid-column: 1;
     grid-row: 1;
     margin-bottom: 5px;
+    line-height: 20px;
 }
 
 .form-pedido__campo > .login__entrada {
@@ -643,14 +644,12 @@ button:focus-visible {
 .form-pedido__campo > .login__error {
     grid-column: 1 / -1;
     grid-row: 3;
+    min-height: 22px;
     display: flex;
     align-items: flex-start;
     gap: 5px;
 }
 
-.form-pedido__campo > .login__error:empty {
-    display: none;
-}
 
 .form-pedido__campo > .login__error img {
     width: 16px;

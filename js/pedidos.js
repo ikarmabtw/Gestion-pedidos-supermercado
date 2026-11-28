@@ -239,6 +239,9 @@
         idsCampos.forEach(function (id) {
             var campo = document.getElementById(id);
             campo.addEventListener("blur", function () {
+                if(campo.value.trim() === ""){
+                    return;
+                }
                 validarCampo(id, false);
             });
         });
