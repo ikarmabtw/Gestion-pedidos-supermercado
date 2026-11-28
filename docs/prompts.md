@@ -366,16 +366,36 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 
 
 ### Resultado generado
-[pendiente: se completa después de ejecutar el prompt]
+Copilot entregó los siguientes archivos:
+
+- `index.html`: pantalla de login con título, nota de campos obligatorios, campos Usuario y Contraseña, botón para ver la contraseña y botón Ingresar.
+- `js/auth.js`: validación de campos vacíos y de caracteres permitidos; comprobación de usuario y clave contra los usuarios de prueba; contador de intentos en `sessionStorage` (`intentos_login`); bloqueo al tercer fallo, que se mantiene al recargar; modales de error con botón "Volver"; mostrar y ocultar la contraseña; redirección al dashboard cuando hay sesión; cierre de sesión.
+- `css/styles.css`: estilos del login, de los mensajes de error, del estado deshabilitado y de los modales.
+- `assets/img/`: `alerta.svg`, `llave.svg`, `ojo.svg`, `ojo-oculto.svg` y `usuario.svg`.
+- `views/*.html` (6 vistas): se agregó la etiqueta `<script src="../js/auth.js">`.
+
+No se modificaron `js/layout.js` ni `js/validaciones.js`. La parte funcional (validaciones, bloqueo, recarga y cierre de sesión) funcionó sin errores de consola; lo que fallaba era el diseño frente a los mockups.
 
 ### Problemas detectados al probarlo
-- [pendiente]
+Al comparar con MK_01, MK_02 y MK_03 (capturas `P2b-ANTES-*.png` en `docs/evidencias/`):
+
+- El título "Iniciar sesión" salía centrado y en azul; en el mockup está alineado a la izquierda y en el color de texto principal.
+- El formulario medía 320 px y los campos y el botón tenían esquinas redondeadas; el mockup usa 400 px y esquinas rectas.
+- El modal mostraba el ícono arriba y centrado, con borde rojo y título rojo; en el mockup el ícono va a la izquierda del título, sin borde y con título oscuro.
+- El modal medía 420 px; el mockup es más ancho (640 px).
+- La capa detrás del modal era muy oscura (`rgba(31, 31, 31, 0.65)`).
+- Los íconos de llave y de usuario no coincidían con los de MK_01.
 
 ### Correcciones manuales
 
 | N° | Problema | Archivo | Corrección | Por qué |
 |----|----------|---------|------------|---------|
-| 1 | | | | |
+| 1 | Título centrado y azul | `css/styles.css` (`.login-contenido h1`) | `text-align` de center a left; color de azul a `--texto-principal`; `font-size: 28px`; `max-width: 400px` | Igualar MK_01 |
+| 2 | Formulario de 320 px con esquinas redondeadas | `css/styles.css` (`.login__nota`, `.form-login`, `.login__entrada`, `.btn-ingresar`) | Ancho de 320 a 400 px; esquinas de 4 px a 0; alto de campos de 44 a 42 px y del botón de 44 a 40 px; separación entre campos de 16 a 19 px; `margin-top: 36px` en el botón | Igualar MK_01 |
+| 3 | Modal con ícono arriba y borde rojo | `css/styles.css` (`.modal`, `.modal__icono`, `.modal__titulo`) | Grilla de 2 columnas con el ícono de 20 × 20 px a la izquierda del título; se quitó el borde rojo; título de rojo a `--texto-principal`; texto alineado a la izquierda; se eliminaron las reglas sin uso `.modal--error`, `.modal--aviso` y `.modal--aviso .modal__titulo` | Igualar MK_02 y MK_03 |
+| 4 | Medidas del modal distintas al mockup | `css/styles.css` (`.modal`, `.modal__acciones`, `.modal__volver`) | Ancho de 420 a 640 px; padding `44px 32px 16px`; margen superior de las acciones de 20 a 40 px; botón Volver con `min-width` de 88 a 120 px y esquinas rectas | Igualar las proporciones de MK_02 y MK_03 |
+| 5 | Capa detrás del modal muy oscura | `css/styles.css` (`.modal-capa`) | `rgba(31, 31, 31, 0.65)` cambiado a `rgba(0, 0, 0, 0.4)` | Igualar la opacidad de los mockups |
+| 6 | Íconos distintos a MK_01 | `assets/img/llave.svg`, `assets/img/usuario.svg` | Se reemplazó el dibujo de ambos: llave con cabeza, agujero y paletón escalonado; usuario con cabeza y hombros. `ojo.svg` se revisó y ya coincidía, sin cambios | Igualar MK_01 |
 
 ### Validación
 
@@ -383,27 +403,28 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P2b
 
 | ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
 |----|------|------|-----|--------|--------------------|----------------|----|
-| CP01 | Verificación | Positivo | 2 | Abrir `index.html` sin sesión | Título "Iniciar sesión", "* Campos obligatorios", campos Usuario y Contraseña, botón Ingresar | | |
-| CP02 | Validación | Positivo | 2 | Comparación con el mockup `MK_01` | Íconos en los campos, ojo en la contraseña, botón de ancho completo, mismos colores | | |
-| CP03 | Validación | Positivo | 2 | Ingresar con `admin` / `admin1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `admin` en sessionStorage | | |
-| CP04 | Validación | Positivo | 2 | Ingresar con `user` / `user1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `user` | | |
-| CP05 | Validación | Negativo | 2 | Ingresar con un usuario que no existe (ej. `pepito`) | Modal "Usuario inexistente" como `MK_02`; `intentos_login` = 1 | | |
-| CP06 | Validación | Negativo | 2 | Usuario válido con clave incorrecta | Modal "Credenciales incorrectas" con "Intentos restantes: 2" (y luego 1) | | |
-| CP07 | Validación | Negativo | 2 | Enviar con ambos campos vacíos y con uno vacío | Mensajes en línea bajo cada campo vacío; sin modal; `intentos_login` no cambia | | |
-| CP08 | Validación | Negativo | 2 | Usuario con caracteres especiales (ej. `ad$min`) | Mensaje "Solo se permiten letras y números."; no cuenta intento | | |
-| CP09 | Validación | Límite | 2 | Tercer fallo seguido | Solo el modal "Cuenta bloqueada" como `MK_03`; campos y botones deshabilitados en gris | | |
-| CP10 | Validación | Límite | 2 | Dos fallos y luego un login correcto | Entra al dashboard y `intentos_login` se elimina | | |
-| CP11 | Validación | Límite | 2 | Recargar la página estando bloqueado | Formulario sigue deshabilitado y reaparece el modal de bloqueo | | |
-| CP12 | Validación | Límite | 2 | En el modal de bloqueo, presionar Escape y luego "Volver" | Escape no lo cierra; "Volver" lo cierra y el formulario sigue deshabilitado | | |
-| CP13 | Validación | Positivo | 2 | Abrir `index.html` con sesión activa | Redirige a `views/dashboard.html` sin mostrar el formulario | | |
-| CP14 | Verificación | Negativo | 2 | `sesion` = `"esto no es json"` y `{"perfil":"superadmin"}`; `intentos_login` = `"abc"` | Se ve el formulario normal, sin errores en consola | | |
-| CP15 | Validación | Positivo | 2 | Clic en Cerrar sesión desde el dashboard | Se elimina `sesion` y vuelve a `index.html` | | |
-| CP16 | Validación | Positivo | 2 | Clic en Cerrar sesión desde otra vista (ej. `views/pedidos.html`) | Se elimina `sesion` y vuelve a `index.html`; sin errores en consola | | |
-| CP17 | Validación | Positivo | 2 | Abrir un modal de error: foco, Escape y "Volver" | Foco en "Volver"; Escape y "Volver" lo cierran; el foco vuelve a Usuario | | |
-| CP18 | Validación | Positivo | 2 | Botón del ojo con mouse y con teclado | Muestra y oculta la contraseña; cambia ícono y `aria-label` | | |
-| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos | 0 resultados; consola sin errores en `index.html` y las 6 vistas | | |
-| CP20 | Validación | Límite | 2 | Anchos de 1920, 768, 375 y 320 px | Formulario y modal adaptados, sin scroll horizontal | | |
-| CP21 | Verificación | Positivo | 1 | `git diff js/layout.js` después del prompt | Sin cambios: el HEAD y el FOOT del P1 siguen intactos | | |
+| CP01 | Verificación | Positivo | 2 | Abrir `index.html` sin sesión | Título "Iniciar sesión", "* Campos obligatorios", campos Usuario y Contraseña, botón Ingresar | Se ve el título "Iniciar sesión", "* Campos obligatorios", los campos Usuario y Contraseña y el botón Ingresar. Captura: `P2b-CP01-login.png`. | Sí |
+| CP02 | Validación | Positivo | 2 | Comparación con el mockup `MK_01` | Íconos en los campos, ojo en la contraseña, botón de ancho completo, mismos colores | Coincide con MK_01: íconos en los campos, ojo en Contraseña, botón de ancho completo y mismos colores. Captura: `P2b-CP01-login.png`. | Sí |
+| CP03 | Validación | Positivo | 2 | Ingresar con `admin` / `admin1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `admin` en sessionStorage | Con `admin` / `admin1234` ingresa y redirige a `views/dashboard.html`. (Sin captura.) | Sí |
+| CP04 | Validación | Positivo | 2 | Ingresar con `user` / `user1234` | Redirige a `views/dashboard.html`; `sesion` con perfil `user` | Con `user` / `user1234` ingresa y redirige a `views/dashboard.html`. (Sin captura.) | Sí |
+| CP05 | Validación | Negativo | 2 | Ingresar con un usuario que no existe (ej. `pepito`) | Modal "Usuario inexistente" como `MK_02`; `intentos_login` = 1 | Sale el modal "Usuario inexistente" con "No existe el usuario en la base de datos.", con el ícono a la izquierda del título y sin borde rojo, como MK_02. `intentos_login` = `"1"`. Captura: `P2b-CP05-modal-usuario-inexistente.png`. | Sí |
+| CP06 | Validación | Negativo | 2 | Usuario válido con clave incorrecta | Modal "Credenciales incorrectas" con "Intentos restantes: 2" (y luego 1) | Primer fallo: modal "Credenciales incorrectas" con "La contraseña no es correcta. Intentos restantes: 2." Segundo fallo: el mismo modal con "Intentos restantes: 1." Capturas: `P2b-CP06-credenciales-incorrectas-2.png` y `P2b-CP06-credenciales-incorrectas-1.png`. | Sí |
+| CP07 | Validación | Negativo | 2 | Enviar con ambos campos vacíos y con uno vacío | Mensajes en línea bajo cada campo vacío; sin modal; `intentos_login` no cambia | Con ambos vacíos salen "Ingrese su usuario." e "Ingrese su contraseña." bajo cada campo, sin modal. Con solo Usuario escrito sale únicamente el mensaje bajo Contraseña; con solo la clave escrita, únicamente el de Usuario. `intentos_login` sigue en `null`. Captura: `P2b-CP07-campos-vacios.png`. | Sí |
+| CP08 | Validación | Negativo | 2 | Usuario con caracteres especiales (ej. `ad$min`) | Mensaje "Solo se permiten letras y números."; no cuenta intento | Con `ad$min` sale "Solo se permiten letras y números." bajo Usuario, sin modal. `intentos_login` sigue en `null`. Captura: `P2b-CP08-caracteres-especiales.png`. | Sí |
+| CP09 | Validación | Límite | 2 | Tercer fallo seguido | Solo el modal "Cuenta bloqueada" como `MK_03`; campos y botones deshabilitados en gris | Al tercer fallo aparece solo el modal "Cuenta bloqueada" con "Su cuenta ha sido bloqueada por seguridad. Comuníquese con soporte."; el botón Ingresar queda en gris. Captura: `P2b-CP09-cuenta-bloqueada.png`. | Sí |
+| CP10 | Validación | Límite | 2 | Dos fallos y luego un login correcto | Entra al dashboard y `intentos_login` se elimina | Tras dos fallos, el login correcto entra al dashboard y `intentos_login` da `null`. (Sin captura.) | Sí |
+| CP11 | Validación | Límite | 2 | Recargar la página estando bloqueado | Formulario sigue deshabilitado y reaparece el modal de bloqueo | Al recargar con F5 reaparece el modal "Cuenta bloqueada" con el foco en Volver y el formulario sigue deshabilitado: campos y botón en gris, sin poder escribir. Captura: `P2b-CP11-recarga-bloqueada.png`. | Sí |
+| CP12 | Validación | Límite | 2 | En el modal de bloqueo, presionar Escape y luego "Volver" | Escape no lo cierra; "Volver" lo cierra y el formulario sigue deshabilitado | Escape no cierra el modal. Al presionar Volver se cierra y el formulario sigue deshabilitado, con campos y botón en gris. Captura: `P2b-CP12-bloqueo-tras-volver.png`. | Sí |
+| CP13 | Validación | Positivo | 2 | Abrir `index.html` con sesión activa | Redirige a `views/dashboard.html` sin mostrar el formulario | Con sesión activa, al abrir `index.html` se queda en el dashboard sin mostrar el formulario. (Sin captura.) | Sí |
+| CP14 | Verificación | Negativo | 2 | `sesion` = `"esto no es json"` y `{"perfil":"superadmin"}`; `intentos_login` = `"abc"` | Se ve el formulario normal, sin errores en consola | Con los tres valores se ve el formulario normal, sin errores en la consola. (Sin captura.) | Sí |
+| CP15 | Validación | Positivo | 2 | Clic en Cerrar sesión desde el dashboard | Se elimina `sesion` y vuelve a `index.html` | "Cerrar sesión" desde el dashboard vuelve a `index.html` y `sesion` queda en `null`. (Sin captura.) | Sí |
+| CP16 | Validación | Positivo | 2 | Clic en Cerrar sesión desde otra vista (ej. `views/pedidos.html`) | Se elimina `sesion` y vuelve a `index.html`; sin errores en consola | "Cerrar sesión" desde otra vista vuelve a `index.html` sin problemas. (Sin captura.) | Sí |
+| CP18 | Validación | Positivo | 2 | Botón del ojo con mouse y con teclado | Muestra y oculta la contraseña; cambia ícono y `aria-label` | El botón del ojo muestra y oculta la contraseña y cambia el ícono. (Sin captura.) | Sí |
+| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos | 0 resultados; consola sin errores en `index.html` y las 6 vistas | Las búsquedas no arrojan resultados y la consola no muestra errores. (Sin captura.) | Sí |
+| CP20 | Validación | Límite | 2 | Anchos de 1920, 768, 375 y 320 px | Formulario y modal adaptados, sin scroll horizontal | Probado solo en 375 px: el formulario y el modal se adaptan al ancho y no aparece scroll horizontal. No se probó en 1920, 768 ni 320 px. Capturas: `P2b-CP20-movil-375-login.png` y `P2b-CP20-movil-375-modal.png`. | Parcial |
+| CP21 | Verificación | Positivo | 1 | `git diff js/layout.js` después del prompt | Sin cambios: el HEAD y el FOOT del P1 siguen intactos | `git diff --ignore-space-at-eol js/layout.js` no muestra cambios. (Sin captura.) | Sí |
+
+Nota: el CP17 (foco y Escape en los modales de error) se retiró del plan y no se ejecutó.
 
 ---
 
