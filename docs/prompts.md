@@ -870,9 +870,9 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P4-
 
 ## P5 - Vista Pedidos: formulario del cliente, validaciones y modales (RIU 4)
 
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
-- **Ejecutado por:** [por asignar]
+- **Fecha:** 28-11-2026
+- **Herramienta:** Copilot + Claude + correciones manuales
+- **Ejecutado por:** Carlos
 - **Hito / RIU:** Hito 3 / RIU 4
 - **Origen:** prompt nuevo. Usa `js/data.js`, `js/validaciones.js` y `js/modal.js` del P4. Se alinea con los mockups MK_06, MK_08, MK_09, MK_23 y MK_26. La tabla Detalle Pedido queda para el P6; mientras no exista, el pedido se guarda con detalle vacío (es solo para probar).
 - **Archivos afectados:** `views/pedidos.html`, `js/pedidos.js`, `css/styles.css` (solo reglas nuevas) y `assets/img/` (tarjeta-id.svg, telefono.svg, correo.svg, ubicacion.svg y ayuda.svg, nuevos). No se modifican `js/layout.js`, `js/auth.js`, `js/auth-guard.js` ni los módulos del P4.
@@ -941,9 +941,9 @@ Programa el formulario de la vista Pedidos. No modifiques js/layout.js, js/auth.
 
 2. Campos (cada uno con <label for>, un ícono, el <input> y un <p> de error con aria-live="polite", reutilizando las clases .login__campo, .login__entrada y .login__error sin renombrarlas):
 - #nombre: etiqueta "Nombre completo *", ícono usuario.svg, type="text", maxlength="255", autocomplete="name", placeholder "Ej.: María Pérez".
-- #run: etiqueta "RUN *" con un botón de ayuda (?), type="text", maxlength="12", placeholder "Ej.: 12.345.678-K".
-- #telefono: etiqueta "Teléfono *" con (?), type="text" con inputmode="numeric" y autocomplete="tel", maxlength="13" (el signo + y hasta 12 dígitos), placeholder "Ej.: +56987654321".
-- #correo: etiqueta "Correo electrónico *" con (?), type="text" con inputmode="email" y autocomplete="email", maxlength="255", placeholder "Ej.: nombre@apellido.cl".
+- #run: etiqueta "RUN *" y, al lado de la etiqueta (hermano, NO dentro del <label>), un botón de ayuda (?), type="text", maxlength="12", placeholder "Ej.: 12.345.678-K".
+- #telefono: etiqueta "Teléfono *" y, al lado de la etiqueta (hermano, NO dentro del <label>), un botón de ayuda (?), type="text" con inputmode="numeric" y autocomplete="tel", maxlength="13" (el signo + y hasta 12 dígitos), placeholder "Ej.: +56987654321".
+- #correo: etiqueta "Correo electrónico *" y, al lado de la etiqueta (hermano, NO dentro del <label>), un botón de ayuda (?), type="text" con inputmode="email" y autocomplete="email", maxlength="255", placeholder "Ej.: nombre@apellido.cl".
 - #direccion: etiqueta "Dirección *", type="text", maxlength="255", autocomplete="street-address", placeholder "Ej.: Av. Libertad 123".
 - Íconos nuevos en assets/img/ (24 × 24, trazo azul #0057B8, mismo estilo de alerta.svg): tarjeta-id.svg (RUN), telefono.svg, correo.svg, ubicacion.svg y ayuda.svg (círculo con signo de interrogación). El de nombre es usuario.svg, que ya existe.
 - Los placeholders usan el color --texto-secundario, igual que el login.
@@ -961,18 +961,18 @@ Programa el formulario de la vista Pedidos. No modifiques js/layout.js, js/auth.
 
 5. Íconos de ayuda (?):
 - Son <button type="button"> con aria-label ("Ayuda sobre el RUN", "Ayuda sobre el teléfono" y "Ayuda sobre el correo electrónico") y aria-describedby apuntando a su tooltip.
-- El tooltip es un recuadro azul (#0057B8, texto blanco) con role="tooltip": "Formato esperado: 12.345.678-K" (RUN), "Formato esperado: +56987654321" (teléfono) y "Formato esperado: nombre@apellido.cl" (correo). Aparece al pasar el mouse y al enfocar el botón con el teclado, y desaparece al salir. Se hace con CSS (:hover y :focus-visible); no uses JavaScript para esto.
+- El tooltip es un recuadro azul (#0057B8, texto blanco) con role="tooltip": "Formato esperado: 12.345.678-K" (RUN), "Formato esperado: +56987654321" (teléfono) y "Formato esperado: nombre@apellido.cl" (correo). Aparece al pasar el mouse y al enfocar el botón (con teclado o al tocarlo en celular), y desaparece al salir. Se hace con CSS (:hover y :focus); no uses JavaScript para esto.
 
 6. Botón Enviar (evento submit del formulario; pulsar Enter en un campo también lo dispara):
 - Primero se detecta qué campos están vacíos (después de quitar los espacios del inicio y del final). Si el detalle existe (window.PedidoDetalle), se llama a PedidoDetalle.validar().
-- Si hay campos vacíos o PedidoDetalle.validar() indica que no hay productos o que hay filas incompletas: marca esos campos vacíos con el error (borde rojo y el texto "Campo obligatorio.") y muestra Modal.mostrar({tipo: "error", titulo: "Campos obligatorios", mensaje: "Debe completar los campos obligatorios para continuar.", textoAceptar: "Aceptar"}). Al cerrar el modal, el foco va al primer campo con error.
+- Si hay campos vacíos o PedidoDetalle.validar() indica que no hay productos o que hay filas incompletas: marca esos campos vacíos con el error (borde rojo y el texto "Campo obligatorio.") y muestra Modal.mostrar({tipo: "error", titulo: "Campos obligatorios", mensaje: "Debe completar los campos obligatorios para continuar.", textoAceptar: "Aceptar"}). Además, los campos no vacíos con formato inválido muestran su error en línea. Al cerrar el modal, el foco va al primer campo con error.
 - Si no hay campos vacíos pero sí errores de formato: no se abre el modal; se muestran los errores en línea y el foco va al primer campo con error. Nunca se guarda un pedido con errores.
 - Si todo es válido: arma el pedido {numero: null, nombre, run, telefono, correo, direccion, detalle, total} (texto sin espacios sobrantes; detalle = PedidoDetalle.obtener() si existe, o un arreglo vacío si no existe; total = Datos.calcularTotal(detalle)), lo guarda con Datos.guardarPedido y muestra Modal.mostrar({tipo: "exito", titulo: "Pedido enviado", mensaje: "Pedido N° [número asignado] enviado con éxito."}). Al pulsar Aceptar (o Escape) se vacía el formulario sin pedir confirmación y el foco vuelve al campo Nombre.
 
 7. Botón Borrar:
 - Abre Modal.mostrar({tipo: "confirmar", titulo: "Vaciar formulario", mensaje: "¿Desea vaciar los campos?"}). Con Cancelar o Escape no se cambia nada. Con Confirmar se vacían los 5 campos, se quitan todos los errores y se llama a PedidoDetalle.limpiar() si existe. El foco vuelve al campo Nombre.
 
-8. Organización de js/pedidos.js (completo): una función autoejecutable con "use strict" que solo actúa si data-vista es "pedidos". Funciones pequeñas con nombres claros (por ejemplo leerFormulario, limpiarFormulario, marcarError, quitarError, validarFormulario). Expón window.FormularioPedido = {leer, limpiar, validar} para que el P8 pueda reutilizarlas sin duplicar código.
+8. Organización de js/pedidos.js (completo): una función autoejecutable con "use strict" que solo actúa si data-vista es "pedidos". Funciones pequeñas con nombres claros (por ejemplo leerFormulario, limpiarFormulario, marcarError, quitarError, validarFormulario). Expón window.FormularioPedido = {leer, limpiar, validar} para que el P8 pueda reutilizarlas sin duplicar código. window.PedidoDetalle se consulta siempre dentro de las funciones (al enviar, al borrar), nunca al cargar el archivo, para que el orden de los scripts no importe.
 
 9. css/styles.css: agrega solo las reglas nuevas necesarias (clases que empiecen con .form-pedido, .pedido-, .campo-ayuda, .tooltip- y el modificador de error de los campos): rejilla de dos columnas con espacio entre ellas; el campo Dirección ocupa las dos columnas; .pedido-acciones alineado a la derecha con 16 px entre botones; el título "Detalle Pedido" con 20 px y peso 600 (igual que los encabezados). No modifiques las reglas de .login__*.
 
@@ -1008,43 +1008,53 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 ```
 
 ### Resultado generado
-[pendiente: se completa después de ejecutar el prompt]
+Copilot generó el formulario de la vista Pedidos y lo dejó conectado a los módulos del P4. Archivos entregados:
+- views/pedidos.html: formulario #form-pedido con los 5 campos (Nombre, RUN, Teléfono, Correo y Dirección), botones de ayuda (?) con tooltip, sección Detalle Pedido con el contenedor #detalle-pedido vacío para el P6 y los botones Borrar y Enviar. Se agregó pedidos.js al final de los scripts.
+- js/pedidos.js (326 líneas): filtros de escritura para nombre, RUN y teléfono (también al pegar, con el cursor recalculado), validación al salir del campo y al enviar, errores accesibles (aria-invalid y aria-describedby), modales de error, éxito y confirmación, y la API window.FormularioPedido = {leer, limpiar, validar}. window.PedidoDetalle se consulta solo al enviar o borrar; si el P6 no existe, el detalle se trata como un arreglo vacío.
+- css/styles.css: reglas nuevas al final (148 líneas) con rejilla de dos columnas, estado de error .login__entrada--error, tooltips por :hover y :focus-within, y estilos responsivos.
+- assets/img/: tarjeta-id.svg, telefono.svg, correo.svg, ubicacion.svg y ayuda.svg.
+No se modificaron js/layout.js, js/auth.js, js/auth-guard.js, js/app.js ni los módulos del P4. Copilot reportó que git diff --check pasó y que no pudo ejecutar node --check porque Node.js no estaba disponible; el código se cargó y ejecutó en las pruebas. Probó los filtros, las validaciones, los modales y el guardado como pedido 1006.
 
 ### Problemas detectados al probarlo
-- [pendiente]
+- Salir de un campo vacío borraba su error "Campo obligatorio.": al pulsar Enter con el Nombre vacío, o al avanzar con Tab por los campos vacíos después de abrir el modal, los campos perdían el borde rojo sin haber sido completados (no se cumplía "destacar los campos no completados" del RIU 4 y MK_08).
+- El primer clic en Enviar podía perderse: al hacer clic en Enviar con el cursor en un campo con formato inválido (por ejemplo Dirección), el campo sale (blur) y aparece su mensaje de error, que empuja los botones 22 px hacia abajo antes de soltar el clic, y el pedido no se enviaba hasta hacer un segundo clic.
+- Los campos Nombre y RUN de la primera fila quedaban desalineados por 2 px, porque el ícono de ayuda (?) de 20 px hacía más alta la etiqueta del RUN.
+- El resto de los casos (orden de tabulación, filtros, pegado, validaciones de formato, modales, guardado del pedido 1006, Borrar con Cancelar y Confirmar, tooltips y responsivo a 700, 375 y 320 px) dio el resultado esperado, sin errores en consola.
 
 ### Correcciones manuales
 
 | N° | Problema | Archivo | Corrección | Por qué |
 |----|----------|---------|------------|---------|
-| 1 | | | | |
+| 1  |Salir de un campo vacío borraba el "Campo obligatorio". |js/pedidos.js |En conectarValidaciones(), el evento blur ahora no hace nada si el campo está vacío |El error marcado al enviar debe mantenerse hasta que el usuario escriba un valor válido; así los campos no completados siguen destacados |
+| 2  |El primer clic en Enviar se perdía cuando aparecía un error por el blur | css/styles.css | Se agregó min-height: 22px a .form-pedido__campo > .login__error y se eliminó la regla :empty { display: none }| Reservar el alto del mensaje evita que los botones se muevan al aparecer un error, y el clic se registra al primer intento|
+| 3  | Nombre y RUN desalineados por 2 px | css/styles.css| Se agregó line-height: 20px a .form-pedido__campo label |Iguala el alto de las etiquetas con el del ícono de ayuda de 20 px| 
 
 ### Validación
 
-Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P5-CPxx-nombre.png`.
+Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P5-CPxx-nombre.png`. Se incluyen solo 5 capturas; una misma captura puede cubrir varios casos y el resto de los resultados se deja por escrito.
 
 | ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
 |----|------|------|-----|--------|--------------------|----------------|----|
-| CP01 | Validación | Positivo | 4 y 9 | Entrar como `user` y abrir Pedidos | Se ve el formulario de MK_06: título "Pedidos", "* Campos obligatorios", 5 campos con etiqueta con asterisco, ícono y ejemplo "Ej.:", y los botones Borrar (rojo) y Enviar (azul) abajo a la derecha | | |
-| CP02 | Validación | Negativo | 4 | Con el formulario vacío, presionar Enviar | Modal "Campos obligatorios" (MK_08); los 5 campos quedan con borde rojo y "Campo obligatorio."; al cerrar, el foco va a Nombre | | |
-| CP03 | Validación | Negativo | 4 | Completar solo Nombre y RUN válidos y presionar Enviar | Modal "Campos obligatorios" y solo Teléfono, Correo y Dirección quedan resaltados | | |
-| CP04 | Validación | Límite | 4 | Escribir `12345678-K` en RUN y salir del campo | Error en línea: "RUN inválido. Formato esperado: 12.345.678-K", con borde rojo y aria-invalid | | |
-| CP05 | Validación | Límite | 4 | Escribir `12.345.678-k` en RUN | La k se convierte sola en K mayúscula y el valor queda válido | | |
-| CP06 | Validación | Límite | 4 | Escribir `abc987` en Teléfono; luego `987654321` y salir del campo | Solo quedan los dígitos (`987`); con `987654321` aparece "Teléfono inválido. Formato esperado: +56987654321" (MK_26) | | |
-| CP07 | Validación | Límite | 4 | Escribir más de 12 dígitos en Teléfono | No deja escribir más allá del signo + y 12 dígitos | | |
-| CP08 | Validación | Límite | 4 | Escribir `maria@correo` en Correo y salir del campo | Error: "Correo inválido. Formato esperado: nombre@apellido.cl" | | |
-| CP09 | Validación | Límite | 4 | Escribir `Ana123` en Nombre | Los dígitos no se escriben; queda `Ana` | | |
-| CP10 | Validación | Límite | 4 | Pegar 300 caracteres en Nombre y en Dirección | Cada campo se corta en 255 caracteres | | |
-| CP11 | Validación | Positivo | 4 | Pasar el mouse y luego enfocar con Tab el (?) de RUN, Teléfono y Correo | Aparece el recuadro azul "Formato esperado: ..." con el ejemplo de cada campo, y desaparece al salir | | |
-| CP12 | Validación | Positivo | 4 | Corregir un campo que tenía error escribiendo un valor válido | El error, el borde rojo y aria-invalid desaparecen al escribir | | |
-| CP13 | Validación | Positivo | 4 | Completar todos los campos con datos válidos y presionar Enviar (sin la tabla del P6) | Modal "Pedido enviado": "Pedido N° 1006 enviado con éxito." (MK_23) y `Datos.listarPedidos().length` es 6 | | |
-| CP14 | Validación | Positivo | 4 | Presionar Aceptar en el modal de éxito | El formulario queda vacío, sin errores, y el foco vuelve a Nombre | | |
-| CP15 | Validación | Positivo | 4 | Con datos escritos, presionar Borrar, luego Cancelar y de nuevo Borrar y Confirmar | Modal "Vaciar formulario" (MK_09); Cancelar no borra nada; Confirmar vacía todo y quita los errores | | |
-| CP16 | Validación | Límite | 4 | Navegar con teclado: Tab por todos los campos, abrir un modal, usar Tab y Escape | Orden lógico Nombre, RUN, (?), Teléfono, (?), Correo, (?), Dirección, Borrar, Enviar; dentro del modal Tab no sale y Escape lo cierra | | |
-| CP17 | Validación | Límite | 4 | Probar el formulario a 375 y 320 px de ancho | Una sola columna, sin scroll horizontal, botones visibles | | |
-| CP18 | Validación | Negativo | 10 | Iniciar sesión como `admin` y abrir `views/pedidos.html` por URL | Modal "Acceso restringido" en el dashboard (regresión de P3-b) | | |
-| CP19 | Verificación | Positivo | 1, 2 y 10 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/auth-guard.js js/data.js js/validaciones.js js/modal.js` | Sin cambios en los 6 archivos | | |
-| CP20 | Verificación | Positivo | 4 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos y consola abierta en Pedidos | 0 resultados y consola sin errores | | |
+| CP01 | Validación | Positivo | 4 y 9 | Entrar como `user` y abrir Pedidos | Se ve el formulario de MK_06: título "Pedidos", "* Campos obligatorios", 5 campos con etiqueta con asterisco, ícono y ejemplo "Ej.:", y los botones Borrar (rojo) y Enviar (azul) abajo a la derecha | Se vio el formulario con título "Pedidos", "* Campos obligatorios", los 5 campos con asterisco, ícono y ejemplo "Ej.:", y Borrar (rojo) y Enviar (azul) a la derecha. Captura `P5-CP01-formulario-vacio.png` | Sí |
+| CP02 | Validación | Negativo | 4 | Con el formulario vacío, presionar Enviar | Modal "Campos obligatorios" (MK_08); los 5 campos quedan con borde rojo y "Campo obligatorio."; al cerrar, el foco va a Nombre | Se abrió el modal "Campos obligatorios"; los 5 campos quedaron con borde rojo y "Campo obligatorio."; al cerrar el modal el foco quedó en Nombre. Captura `P5-CP02-modal-campos-obligatorios.png` | Sí |
+| CP03 | Validación | Negativo | 4 | Completar solo Nombre y RUN válidos y presionar Enviar | Modal "Campos obligatorios" y solo Teléfono, Correo y Dirección quedan resaltados | Se abrió el modal y solo Teléfono, Correo y Dirección quedaron resaltados. Sin captura | Sí |
+| CP04 | Validación | Límite | 4 | Escribir `12345678-K` en RUN y salir del campo | Error en línea: "RUN inválido. Formato esperado: 12.345.678-K", con borde rojo y aria-invalid | Apareció "RUN inválido. Formato esperado: 12.345.678-K" con borde rojo y aria-invalid="true". Captura `P5-CP04-errores-formato-tooltip.png` | Sí |
+| CP05 | Validación | Límite | 4 | Escribir `12.345.678-k` en RUN | La k se convierte sola en K mayúscula y el valor queda válido | La k se convirtió en K; el valor quedó 12.345.678-K, válido y sin error. Sin captura | Sí |
+| CP06 | Validación | Límite | 4 | Escribir `abc987` en Teléfono; luego `987654321` y salir del campo | Solo quedan los dígitos (`987`); con `987654321` aparece "Teléfono inválido. Formato esperado: +56987654321" (MK_26) | Con `abc987` quedó `987`; con `987654321` apareció "Teléfono inválido. Formato esperado: +56987654321". Captura `P5-CP04-errores-formato-tooltip.png` | Sí |
+| CP07 | Validación | Límite | 4 | Escribir más de 12 dígitos en Teléfono | No deja escribir más allá del signo + y 12 dígitos | Con el signo + el campo se corta en + y 12 dígitos (13 caracteres). Sin el signo + admite hasta 13 dígitos y luego marca el error de formato al salir del campo. Sin captura | Sí |
+| CP08 | Validación | Límite | 4 | Escribir `maria@correo` en Correo y salir del campo | Error: "Correo inválido. Formato esperado: nombre@apellido.cl" | Apareció "Correo inválido. Formato esperado: nombre@apellido.cl". Captura `P5-CP04-errores-formato-tooltip.png` | Sí |
+| CP09 | Validación | Límite | 4 | Escribir `Ana123` en Nombre | Los dígitos no se escriben; queda `Ana` | Los dígitos no se escribieron; quedó `Ana`. Sin captura | Sí |
+| CP10 | Validación | Límite | 4 | Pegar 300 caracteres en Nombre y en Dirección | Cada campo se corta en 255 caracteres | Nombre y Dirección quedaron cortados en 255 caracteres. Sin captura | Sí |
+| CP11 | Validación | Positivo | 4 | Pasar el mouse y luego enfocar con Tab el (?) de RUN, Teléfono y Correo | Aparece el recuadro azul "Formato esperado: ..." con el ejemplo de cada campo, y desaparece al salir | Con el mouse y con Tab aparece el recuadro azul con el ejemplo de cada campo y desaparece al salir. Captura `P5-CP04-errores-formato-tooltip.png` (tooltip del RUN) | Sí |
+| CP12 | Validación | Positivo | 4 | Corregir un campo que tenía error escribiendo un valor válido | El error, el borde rojo y aria-invalid desaparecen al escribir | Al escribir un valor válido desaparecieron el mensaje, el borde rojo y aria-invalid. Sin captura | Sí |
+| CP13 | Validación | Positivo | 4 | Completar todos los campos con datos válidos y presionar Enviar (sin la tabla del P6) | Modal "Pedido enviado": "Pedido N° 1006 enviado con éxito." (MK_23) y `Datos.listarPedidos().length` es 6 | Modal "Pedido enviado" con "Pedido N° 1006 enviado con éxito."; `Datos.listarPedidos().length` devolvió 6. Captura `P5-CP13-pedido-enviado.png` | Sí |
+| CP14 | Validación | Positivo | 4 | Presionar Aceptar en el modal de éxito | El formulario queda vacío, sin errores, y el foco vuelve a Nombre | El formulario quedó vacío, sin errores, y el foco volvió a Nombre. Sin captura | Sí |
+| CP15 | Validación | Positivo | 4 | Con datos escritos, presionar Borrar, luego Cancelar y de nuevo Borrar y Confirmar | Modal "Vaciar formulario" (MK_09); Cancelar no borra nada; Confirmar vacía todo y quita los errores | Modal "Vaciar formulario" con "¿Desea vaciar los campos?"; Cancelar conservó los datos; Confirmar vació los campos, quitó los errores y dejó el foco en Nombre. Sin captura | Sí |
+| CP16 | Validación | Límite | 4 | Navegar con teclado: Tab por todos los campos, abrir un modal, usar Tab y Escape | Orden lógico Nombre, RUN, (?), Teléfono, (?), Correo, (?), Dirección, Borrar, Enviar; dentro del modal Tab no sale y Escape lo cierra | El orden fue Nombre, RUN, (?), Teléfono, (?), Correo, (?), Dirección, Borrar, Enviar; dentro del modal Tab no salió y Escape lo cerró. Sin captura | Sí |
+| CP17 | Validación | Límite | 4 | Probar el formulario a 375 y 320 px de ancho | Una sola columna, sin scroll horizontal, botones visibles | A 375 y 320 px los campos pasan a una columna, sin scroll horizontal y con los botones visibles. Captura `P5-CP17-responsivo-375.png` (375 px) | Sí |
+| CP18 | Validación | Negativo | 10 | Iniciar sesión como `admin` y abrir `views/pedidos.html` por URL | Modal "Acceso restringido" en el dashboard (regresión de P3-b) | Con `admin`, al abrir `pedidos.html` por URL se mostró el modal "Acceso restringido" en el dashboard. Sin captura | Sí |
+| CP19 | Verificación | Positivo | 1, 2 y 10 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/auth-guard.js js/data.js js/validaciones.js js/modal.js` | Sin cambios en los 6 archivos | El diff salió vacío en los 6 archivos. Sin captura | Sí |
+| CP20 | Verificación | Positivo | 4 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos y consola abierta en Pedidos | 0 resultados y consola sin errores | 0 resultados en la búsqueda y consola sin errores en Pedidos. Sin captura | Sí |
 
 ---
 
