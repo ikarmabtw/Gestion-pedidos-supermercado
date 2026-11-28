@@ -282,31 +282,34 @@ button:focus-visible {
 }
 
 .login-contenido h1 {
+    width: 100%;
+    max-width: 400px;
     margin-bottom: 8px;
-    color: var(--azul-marca);
-    text-align: center;
+    color: var(--texto-principal);
+    font-size: 28px;
+    text-align: left;
 }
 
 .login__nota {
     width: 100%;
-    max-width: 320px;
-    margin: 0 0 16px;
+    max-width: 400px;
+    margin: 0 0 9px;
     color: var(--texto-secundario);
     font-size: var(--tam-texto);
 }
 
 .form-login {
     width: 100%;
-    max-width: 320px;
+    max-width: 400px;
 }
 
 .login__campo {
-    margin-bottom: 16px;
+    margin-bottom: 19px;
 }
 
 .login__campo label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     color: var(--texto-principal);
     font-size: var(--tam-texto);
     font-weight: 600;
@@ -314,11 +317,11 @@ button:focus-visible {
 
 .login__entrada {
     display: flex;
-    min-height: 44px;
+    min-height: 42px;
     align-items: center;
     gap: 10px;
     border: 1px solid var(--campo);
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--campo);
     padding: 0 10px;
 }
@@ -332,7 +335,7 @@ button:focus-visible {
 .login__entrada input {
     width: 100%;
     min-width: 0;
-    min-height: 42px;
+    min-height: 40px;
     border: 0;
     outline: 0;
     background: transparent;
@@ -391,9 +394,10 @@ button:focus-visible {
 
 .btn-ingresar {
     width: 100%;
-    min-height: 44px;
+    min-height: 40px;
+    margin-top: 36px;
     border: 0;
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--azul-marca);
     color: var(--blanco);
     cursor: pointer;
@@ -433,64 +437,58 @@ button:focus-visible {
     align-items: center;
     justify-items: center;
     overflow-y: auto;
-    background: rgba(31, 31, 31, 0.65);
+    background: rgba(0, 0, 0, 0.4);
     padding: 16px;
 }
 
 .modal {
     display: grid;
-    width: min(100%, 420px);
-    justify-items: center;
-    border: 2px solid var(--rojo);
-    border-radius: 8px;
+    width: min(100%, 640px);
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 12px;
+    border-radius: 6px;
     background: var(--campo);
     color: var(--texto-principal);
-    padding: 24px;
-    text-align: center;
-}
-
-.modal--error {
-    --modal-acento: var(--rojo);
-}
-
-.modal--aviso {
-    border-color: var(--azul-marca);
+    padding: 44px 32px 16px;
+    text-align: left;
 }
 
 .modal__icono {
-    width: 40px;
-    height: 40px;
+    grid-column: 1;
+    grid-row: 1;
+    width: 20px;
+    height: 20px;
 }
 
 .modal__titulo {
-    margin: 12px 0 8px;
-    color: var(--rojo);
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    color: var(--texto-principal);
     font-size: var(--tam-titulo);
     font-weight: 600;
 }
 
-.modal--aviso .modal__titulo {
-    color: var(--azul-marca);
-}
-
 .modal__mensaje {
-    margin: 0;
+    grid-column: 1 / -1;
+    margin: 12px 0 0;
     color: var(--texto-principal);
     font-size: var(--tam-texto);
 }
 
 .modal__acciones {
     display: flex;
-    width: 100%;
+    grid-column: 1 / -1;
     justify-content: flex-end;
-    margin-top: 20px;
+    margin-top: 40px;
 }
 
 .modal__volver {
-    min-width: 88px;
+    min-width: 120px;
     min-height: 40px;
     border: 0;
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--rojo);
     color: var(--blanco);
     cursor: pointer;
