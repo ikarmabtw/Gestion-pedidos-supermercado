@@ -1060,12 +1060,12 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P5-
 
 ## P6 - Vista Pedidos: Detalle Pedido con buscador, cálculos en CLP, filas y total (RIU 4)
 
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
-- **Ejecutado por:** [por asignar]
+- **Fecha:** 28-11-2026
+- **Herramienta:** Copilot + Claude + correciones manuales
+- **Ejecutado por:** Carlos
 - **Hito / RIU:** Hito 3 / RIU 4 (y la regla de cantidad cero del RIU 6)
-- **Origen:** prompt nuevo. Continúa el P5 en la misma vista: llena el contenedor `#detalle-pedido`. Se alinea con los mockups MK_06, MK_07, MK_28, MK_35, MK_36 y MK_36b. Interpreta MK_35 así: una fila con cantidad 0 queda en gris, no suma y su producto no se ofrece en las otras filas.
-- **Archivos afectados:** `js/pedido-detalle.js` (nuevo), `views/pedidos.html` (solo la etiqueta `<script>`), `css/styles.css` (solo reglas nuevas) y `assets/img/` (flecha-abajo.svg y flecha-arriba.svg, nuevos). No se modifican `js/layout.js`, `js/auth.js`, `js/auth-guard.js` ni los módulos del P4; `js/pedidos.js` solo si se necesita un ajuste mínimo, que se registra.
+- **Origen:** prompt nuevo. Continúa el P5 en la misma vista: llena el contenedor `#detalle-pedido`. Se alinea con los mockups MK_06, MK_07, MK_28, MK_35, MK_36 y MK_36b. Interpreta MK_35 así: una fila con cantidad 0 queda en gris, no suma y su producto no se ofrece en las otras filas (el "0 resultados" del mockup se debe a su catálogo corto). Se sigue el RIU en el scroll (desde la fila 11), aunque MK_28 muestra un visor de 5 filas.
+- **Archivos afectados:** `js/pedido-detalle.js` (nuevo), `views/pedidos.html` (solo la etiqueta `<script>`), `css/styles.css` (solo reglas nuevas) y `assets/img/` (flecha-abajo.svg y flecha-arriba.svg, nuevos). No se modifican `js/layout.js`, `js/auth.js`, `js/auth-guard.js` ni los módulos del P4; `js/pedidos.js` lleva un ajuste mínimo en enfocarPrimerCampoConErorr, que se registra.
 
 ### Prompt completo
 
@@ -1079,15 +1079,15 @@ Continuamos el Sistema de Gestión de Pedidos de la cadena de supermercados Merc
 - Login y sesión: index.html y js/auth.js. Contrato de sesión: sessionStorage["sesion"] = {"usuario": "...", "nombre": "...", "perfil": "admin" | "user"}. Usuarios de prueba: admin / admin1234 y user / user1234 (el user se llama "User Mercado Sur"). NO se modifica.
 - Control de acceso: js/auth-guard.js (en el <head> de las 6 vistas, sin defer) oculta la página hasta confirmar el acceso, redirige si no hay sesión y bloquea con el modal "Acceso restringido" a un perfil que abre la vista del otro (el perfil user solo puede usar dashboard, pedidos y pedidos-ingresados). NO se modifica.
 - Cada vista de views/ tiene <body data-raiz="../" data-vista="..."> (dashboard, pedidos, pedidos-ingresados, productos, producto-form o procesamiento) y contiene <header id="app-header">, <main id="contenido" class="contenido-principal"> y <footer id="app-footer">. Los scripts van al final del <body>: primero layout.js y luego auth.js, y después los propios de la vista.
-- css/styles.css ya define los tokens (--azul-marca #0057B8, --blanco, --campo #CCD8E8, --texto-principal #1F1F1F, --texto-secundario #595959, --rojo #DB0B00, --gris-deshabilitado #9E9E9E, --tam-titulo 20px, --tam-texto 14px, fuente Geist local) y estas clases: .contenido-principal, .login__campo (etiqueta + campo), .login__entrada (campo con ícono a la izquierda y borde azul al enfocar), .login__error, .login__nota ("* Campos obligatorios"), .modal-capa, .modal, .modal__icono, .modal__titulo, .modal__mensaje, .modal__acciones, .panel-encabezado y .panel-bienvenida.
-- Íconos existentes en assets/img/: alerta.svg, usuario.svg, llave.svg, ojo.svg, ojo-oculto.svg, logo.svg, facebook.svg, instagram.svg y linkedin.svg.
+- css/styles.css ya define los tokens (--azul-marca #0057B8, --blanco, --campo #CCD8E8, --texto-principal #1F1F1F, --texto-secundario #595959, --rojo #DB0B00, --gris-deshabilitado #9E9E9E, --tam-titulo 20px, --tam-texto 14px, fuente Geist local) y estas clases: .contenido-principal, .login__campo (etiqueta + campo), .login__entrada (campo con ícono a la izquierda y borde azul al enfocar), .login__error, .login__nota ("* Campos obligatorios"), .modal-capa, .modal, .modal__icono, .modal__titulo, .modal__mensaje, .modal__acciones, .panel-encabezado y .panel-bienvenida. No existe una clase para ocultar texto solo visualmente.
+- Íconos existentes en assets/img/: alerta.svg, usuario.svg, llave.svg, ojo.svg, ojo-oculto.svg, logo.svg, facebook.svg, instagram.svg, linkedin.svg, tarjeta-id.svg, telefono.svg, correo.svg, ubicacion.svg, ayuda.svg y exito.svg.
 - views/pedidos.html (P5) ya contiene <form id="form-pedido"> con los 5 campos, <section aria-labelledby="titulo-detalle"> con <h2 id="titulo-detalle">Detalle Pedido</h2> y un <div id="detalle-pedido"></div> VACÍO (aquí va todo lo de este prompt), y luego <div class="pedido-acciones"> con los botones Borrar y Enviar. Al final del <body> están layout.js, auth.js, data.js, validaciones.js, modal.js y pedidos.js.
-- js/pedidos.js (P5) ya valida el formulario, guarda el pedido y vacía el formulario; llama a window.PedidoDetalle (obtener, validar, limpiar) solo si existe. Este prompt crea ese objeto.
+- js/pedidos.js (P5) ya valida el formulario, guarda el pedido y vacía el formulario; llama a window.PedidoDetalle (obtener, validar, limpiar) solo si existe. Este prompt crea ese objeto. Dentro del formulario, pulsar Enter en un campo de texto envía el formulario (comportamiento normal del P5).
 
 Módulos compartidos que entregó el P4 (ya existen; NO se reescriben ni se modifican):
 - js/data.js expone window.Datos. Es el ÚNICO archivo que usa localStorage (claves "ms_productos" y "ms_pedidos", en JSON):
   Datos.listarProductos() devuelve una copia del arreglo de productos {numero, nombre, cantidad, valor, estado} (estado: "Habilitado" o "Deshabilitado").
-  Datos.listarProductosPedibles() devuelve solo los productos con estado "Habilitado" y cantidad mayor que 0.
+  Datos.listarProductosPedibles() devuelve solo los productos con estado "Habilitado" y cantidad mayor que 0, en el orden del catálogo.
   Datos.listarPedidos() devuelve una copia del arreglo de pedidos, ordenado por numero ascendente.
   Datos.obtenerPedido(numero) devuelve el pedido o null.
   Datos.guardarPedido(pedido) si pedido.numero es null crea el pedido con el siguiente número (mínimo 1001); si el número ya existe, lo actualiza; devuelve el pedido guardado.
@@ -1095,7 +1095,7 @@ Módulos compartidos que entregó el P4 (ya existen; NO se reescriben ni se modi
   Datos.calcularTotal(detalle) devuelve la suma de valorVenta.
   Datos.restablecer() vuelve a cargar los datos de prueba.
   Un pedido es {numero, nombre, run, telefono, correo, direccion, detalle: [{cantidad, productoNumero, producto, valorUnitario, valorVenta}], total}.
-- js/validaciones.js expone window.Validaciones. nombre(t), run(t), telefono(t), correo(t), direccion(t) y cantidad(v) devuelven {valido: boolean, mensaje: string} (mensaje vacío si es válido). formatearCLP(n) devuelve texto como "$1.200". normalizar(t) devuelve el texto en minúsculas y sin tildes. contiene(textoCompleto, busqueda) devuelve true si el texto contiene la búsqueda de forma consecutiva, sin distinguir mayúsculas ni tildes.
+- js/validaciones.js expone window.Validaciones. nombre(t), run(t), telefono(t), correo(t), direccion(t) y cantidad(v) devuelven {valido: boolean, mensaje: string} (mensaje vacío si es válido). Validaciones.cantidad devuelve "Campo obligatorio." si está vacía y "Ingrese un número entre 1 y 100." si no es un entero de 1 a 100 (el 0 le parece inválido). formatearCLP(n) devuelve texto como "$1.200". normalizar(t) devuelve el texto en minúsculas y sin tildes. contiene(textoCompleto, busqueda) devuelve true si el texto contiene la búsqueda de forma consecutiva, sin distinguir mayúsculas ni tildes.
 - js/modal.js expone window.Modal.mostrar({tipo, titulo, mensaje, textoAceptar, textoCancelar, alAceptar, alCancelar, alCerrar}). tipo es "error", "exito", "aviso" o "confirmar". Solo hay un modal abierto a la vez. Escape equivale a Aceptar en los modales de un botón y a Cancelar en "confirmar". Modal.estaAbierto() devuelve true o false.
 - css/styles.css: tokens --gris-calculado (#E5E5E5) y --borde-tabla (#D9D9D9); botones .boton con las variantes .boton--azul, .boton--rojo y .boton--borde (todos con estado :disabled); y los modificadores .modal--exito y .modal--aviso.
 
@@ -1105,6 +1105,7 @@ Contrato que debe cumplir este prompt (lo usan P5 y P8): window.PedidoDetalle co
 - limpiar(): deja la tabla con 5 filas en blanco y el Total en $0.
 - cargar(detalle): carga las filas de un pedido y completa con filas en blanco hasta tener al menos 5 y siempre al menos 1 fila en blanco.
 - total(): suma de valorVenta de las filas completas y activas.
+- enfocarError(): método adicional que usa un ajuste mínimo de P5. Pone el foco en el campo Cantidad de la primera fila con error; si ninguna fila tiene error (solo faltan productos), en el Cantidad de la primera fila en blanco (o de la primera fila). Devuelve true si movió el foco.
 
 Requerimientos que se implementan (texto del documento de requerimientos):
 - RIU 4, Detalle pedido: tabla con al menos cinco filas y cuatro columnas (Cantidad, Producto, Valor unitario, Valor venta). Dos columnas completables y dos deshabilitadas. Incluye dos botones en la parte superior izquierda de la tabla (agregar fila y eliminar fila). Cantidad: campo numérico, valor máximo no debe superar 100. Producto: selector desplegable con buscador; al ingresar 3 letras ya debe arrojar resultados, y las coincidencias deben ser palabras que contengan estas 3 letras de manera consecutiva (ejemplo: "tal" → "tallarines", "tallo de apio", etc.). Total: campo numérico deshabilitado.
@@ -1112,15 +1113,15 @@ Requerimientos que se implementan (texto del documento de requerimientos):
 
 Mockups de referencia:
 - MK_06: tabla vacía con 5 filas. Botones "Agregar fila" y "Eliminar fila" (azules, pegados) arriba a la izquierda de la tabla. Encabezado azul con "Cantidad *" y debajo "Máx. 100", "Producto *", "Valor Unitario" y "Valor Venta" (estas dos alineadas a la derecha). Las celdas de Valor Unitario y Valor Venta tienen fondo gris claro. Debajo de la tabla, a la derecha, la etiqueta "Total" y un campo gris claro con el valor (texto azul, alineado a la derecha).
-- MK_07: filas completas (por ejemplo 2 · Tallarines 400g · $1.200 · $2.400 y 3 · Arroz Grado 1 1kg · $1.500 · $4.500), con una flecha hacia abajo a la derecha del producto. El selector abierto en una fila vacía muestra una caja con borde azul: arriba el campo de búsqueda con el texto escrito (por ejemplo "tal") y una flecha hacia arriba, debajo la lista de resultados (la primera opción resaltada en celeste #CCD8E8) y al final un texto gris "1 resultado".
-- MK_35: el mismo selector con "tal" muestra solo el texto "0 resultados". Una fila con Cantidad 0 aparece completa en gris (cantidad, producto y valores en gris claro y la flecha apagada).
-- MK_28: tabla con más de 10 productos y una barra de scroll vertical azul a la derecha; el encabezado se mantiene visible.
+- MK_07: filas completas (por ejemplo 2 · Tallarines 400g · $1.200 · $2.400 y 3 · Arroz Grado 1 1kg · $1.500 · $4.500), con una flecha hacia abajo a la derecha del producto. El selector abierto en una fila vacía muestra una caja con borde azul que cubre la celda y las filas de abajo: arriba el campo de búsqueda con el texto escrito (por ejemplo "tal") y una flecha hacia arriba, debajo la lista de resultados (la primera opción resaltada en celeste #CCD8E8) y al final un texto gris "1 resultado".
+- MK_35: el mismo selector muestra solo el texto "0 resultados" (en el mockup el catálogo es más corto que el de las pruebas). Una fila con Cantidad 0 aparece completa en gris (cantidad, producto y valores en gris claro, Valor Venta "$0" y la flecha apagada) y no suma al Total.
+- MK_28: tabla con más de 10 productos y una barra de scroll vertical azul a la derecha; el encabezado se mantiene visible. (El mockup muestra un visor más bajo que 10 filas; se sigue el RIU: scroll desde la fila 11.)
 - MK_36: modal informativo "No se puede eliminar la fila" y "Las filas con un producto cargado no se pueden eliminar. Solo se pueden eliminar filas en blanco."; las filas con producto aparecen resaltadas con borde rojo detrás del modal.
-- MK_36b: modal informativo "Debe quedar al menos una fila en blanco" y "No es posible eliminar más filas. La tabla debe mantener como mínimo una fila en blanco disponible."
+- MK_36b: modal informativo "Debe quedar al menos una fila en blanco" y "No es posible eliminar más filas. La tabla debe mantener como mínimo una fila en blanco disponible." (la tabla del mockup tiene 3 filas: la tabla puede quedar con menos de 5 filas).
 
 Restricciones técnicas:
 - HTML5, CSS3 y JavaScript puro (ES6+). Prohibido usar frameworks, librerías o CDN. Sin módulos ES (type="module"): el proyecto se abre con doble clic o con Live Server y los archivos comparten objetos globales (window.Datos, window.Validaciones, window.Modal).
-- Prohibido CSS o JS embebido: nada de <style>, <script> con código dentro del HTML, atributos onclick ni style="". Para cambiar estilos desde JS usa clases CSS.
+- Prohibido CSS o JS embebido: nada de <style>, <script> con código dentro del HTML, atributos onclick ni style="". Para cambiar estilos desde JS usa clases CSS. ÚNICA excepción: las coordenadas de la caja desplegable del selector (top, left y width), que JS asigna con elemento.style porque dependen de la posición de la celda y no se pueden expresar con clases; indícalo en un comentario.
 - Prohibido usar fetch().
 - Prohibido usar innerHTML: crea los elementos con createElement y textContent.
 - Rutas relativas: en views/ llevan ../ y se leen de data-raiz.
@@ -1128,60 +1129,68 @@ Restricciones técnicas:
 - Comentarios en español y código simple, con funciones pequeñas y nombres claros.
 
 C – CLARIDAD EN LA TAREA
-Programa la tabla Detalle Pedido. No modifiques js/layout.js, js/auth.js, js/auth-guard.js ni los módulos compartidos del P4. Si el P5 necesita un ajuste mínimo en js/pedidos.js, indícalo aparte y no lo reescribas. No programes el formulario del cliente (P5), la vista Pedidos Ingresados (P7) ni la edición (P8). Usa window.Datos, window.Validaciones y window.Modal. Cumple estas condiciones verificables:
+Programa la tabla Detalle Pedido. No modifiques js/layout.js, js/auth.js, js/auth-guard.js ni los módulos compartidos del P4. Del P5 solo se permite el ajuste mínimo de la condición 11 en js/pedidos.js, que indicarás aparte; no lo reescribas. No programes el formulario del cliente (P5), la vista Pedidos Ingresados (P7) ni la edición (P8). Usa window.Datos, window.Validaciones y window.Modal. Cumple estas condiciones verificables:
 
-1. Archivo nuevo js/pedido-detalle.js. Función autoejecutable con "use strict" que solo actúa si data-vista es "pedidos". Construye con createElement dentro de #detalle-pedido: una barra con los botones "Agregar fila" y "Eliminar fila" (type="button", clase .boton .boton--azul, pegados arriba a la izquierda), un contenedor con scroll que envuelve la tabla, y debajo, a la derecha, la etiqueta "Total" y el campo de total. Expón window.PedidoDetalle con los 5 métodos del contrato. En views/pedidos.html agrega la etiqueta <script src="../js/pedido-detalle.js"></script> antes de pedidos.js (entrega el archivo completo).
+1. Archivo nuevo js/pedido-detalle.js. Función autoejecutable con "use strict" que solo actúa si data-vista es "pedidos". Construye con createElement dentro de #detalle-pedido (que queda con position: relative), en este orden: (a) una barra con los botones "Agregar fila" y "Eliminar fila" (type="button", clase .boton .boton--azul, pegados arriba a la izquierda); (b) un contenedor con scroll que envuelve la tabla; (c) una línea inferior con el mensaje de error de la tabla a la izquierda (condición 5) y, a la derecha, la etiqueta "Total" y el campo de total; (d) la caja desplegable del selector, como hija directa de #detalle-pedido y FUERA del contenedor con scroll (condición 3). Expón window.PedidoDetalle con los 5 métodos del contrato y enfocarError(). En views/pedidos.html agrega la etiqueta <script src="../js/pedido-detalle.js"></script> antes de pedidos.js (entrega el archivo completo).
 
-2. Tabla (<table>, con <caption> oculto visualmente que diga "Detalle del pedido", <thead> y <tbody>):
-- Encabezado con 4 columnas: "Cantidad *" con "Máx. 100" debajo, "Producto *", "Valor Unitario" y "Valor Venta" (estas dos con el texto alineado a la derecha). Fondo azul #0057B8 y texto blanco.
-- Al cargar la vista y con limpiar(): 5 filas en blanco. Cada fila tiene alto fijo de 44 px.
-- Columna Cantidad: <input type="text" inputmode="numeric" maxlength="3"> con aria-label "Cantidad, fila N", texto alineado a la derecha. Solo deja escribir dígitos.
+2. Tabla (<table>, con <caption> oculto visualmente con una clase nueva .detalle-solo-lectores que diga "Detalle del pedido", <thead> y <tbody>):
+- Encabezado con 4 columnas: "Cantidad *" con "Máx. 100" debajo, "Producto *", "Valor Unitario" y "Valor Venta" (estas dos con el texto alineado a la derecha). Fondo azul #0057B8 y texto blanco. Alto fijo del encabezado: 56 px.
+- Al cargar la vista y con limpiar(): 5 filas en blanco. Cada fila mide siempre 44 px (borde incluido, box-sizing: border-box) y su alto nunca cambia, tenga o no error.
+- La tabla tiene min-width de 560 px para que en pantallas angostas se desplace dentro de su contenedor.
+- Columna Cantidad: <input type="text" inputmode="numeric" maxlength="3"> con aria-label "Cantidad, fila N", texto alineado a la derecha. Solo deja escribir dígitos, también al pegar (filtra en el evento input).
 - Columna Producto: el selector con buscador (condición 3).
 - Columnas Valor Unitario y Valor Venta: celdas NO editables (no son campos de entrada), con fondo --gris-calculado, texto azul y alineado a la derecha, en formato Validaciones.formatearCLP. Usa los tokens existentes y los dos nuevos del P4 (--gris-calculado y --borde-tabla para las líneas).
 - Campo Total: un <output> o <input disabled> con la etiqueta "Total", fondo --gris-calculado, texto azul alineado a la derecha, siempre con formato CLP (por ejemplo "$6.900"); empieza en "$0".
 
 3. Selector de producto con buscador (patrón combobox):
-- Cada celda de producto muestra el producto elegido (o vacío) con una flecha hacia abajo a la derecha (ícono nuevo assets/img/flecha-abajo.svg y flecha-arriba.svg, 16 × 16, azul). Al hacer clic o pulsar Enter o la flecha hacia abajo sobre la celda, se abre una caja con borde azul de 2 px bajo la celda: arriba un <input type="text" role="combobox" aria-expanded="true" aria-controls="[id de la lista]" aria-autocomplete="list" aria-label="Buscar producto, fila N"> para buscar y una flecha hacia arriba; debajo una lista <ul role="listbox"> con <li role="option"> y al final un texto gris con el número de resultados.
+- Cada celda de producto contiene un <button type="button"> (clase .selector-producto__boton, aria-haspopup="listbox", aria-expanded, aria-label "Producto, fila N") que ocupa toda la celda y muestra el producto elegido (o vacío) con una flecha hacia abajo a la derecha (ícono nuevo assets/img/flecha-abajo.svg y flecha-arriba.svg, 16 × 16, azul). Es el elemento que recibe el foco con Tab. Al hacer clic, o pulsar Enter, Espacio o la flecha hacia abajo sobre él, se abre la caja.
+- La caja es hija directa de #detalle-pedido (fuera del contenedor con scroll, para que el scroll de la tabla no la corte, tampoco en 375 px). Antes de abrirla, la celda se lleva a la vista dentro del scroll (scrollIntoView con block "nearest"); luego JS calcula con getBoundingClientRect la posición de la celda respecto a #detalle-pedido y le asigna top, left y width (ancho de la celda, mínimo 220 px, sin salirse de #detalle-pedido). Se coloca cubriendo la celda, como en MK_07. No mueve ninguna fila. Se cierra si el contenedor de la tabla hace scroll o si cambia el tamaño de la ventana.
+- La caja tiene borde azul de 2 px y contiene: arriba un <input type="text" role="combobox" aria-expanded="true" aria-controls="[id de la lista]" aria-autocomplete="list" aria-label="Buscar producto, fila N"> para buscar y una flecha hacia arriba; debajo una lista <ul role="listbox"> con <li role="option"> y al final un texto gris con el número de resultados. Los ids de la lista y de las opciones son únicos.
 - Los resultados aparecen solo cuando el texto de búsqueda tiene 3 o más letras (después de quitar espacios). Con menos de 3 letras la lista queda vacía y el texto gris dice "Escriba al menos 3 letras".
-- Una opción coincide si Validaciones.contiene(nombreDelProducto, texto) es true: el texto debe aparecer de forma consecutiva en cualquier parte del nombre, no solo al inicio, sin distinguir mayúsculas ni tildes. Ejemplo con los datos de prueba: "tal" devuelve exactamente "Tallarines 400g", "Tallo de Apio" y "Agua Cristal 2L" (en ese orden, el del catálogo). "Aceite Vegetal 900ml" también contiene "tal", pero NO debe aparecer porque está deshabilitado.
+- Una opción coincide si Validaciones.contiene(nombreDelProducto, texto) es true: el texto debe aparecer de forma consecutiva en cualquier parte del nombre, no solo al inicio, sin distinguir mayúsculas ni tildes. Ejemplo con los datos de prueba: "tal" devuelve exactamente "Tallarines 400g", "Agua Cristal 2L" y "Tallo de Apio" (en ese orden, el del catálogo). "Aceite Vegetal 900ml" también contiene "tal", pero NO debe aparecer porque está deshabilitado.
 - El texto del pie dice "N resultados" ("1 resultado" en singular y "0 resultados" cuando no hay coincidencias).
 - Las opciones salen SOLO de Datos.listarProductosPedibles() (productos habilitados con cantidad mayor que 0) menos los productos que estén en una fila con cantidad 0 en la misma tabla (condición 6). Se permite repetir un mismo producto en filas distintas (el RIU no lo prohíbe).
-- Teclado: Flecha abajo y arriba mueven la opción resaltada (aria-activedescendant); Enter elige la opción resaltada; Escape cierra sin elegir y devuelve el foco a la celda; Tab cierra la caja. Con el mouse, clic en una opción la elige. La primera opción queda resaltada (fondo --campo).
-- Al elegir un producto se cierra la caja, la celda muestra su nombre y el foco vuelve a la celda. Solo puede haber una caja abierta a la vez, y se cierra al hacer clic fuera de ella. La caja se abre sobre la tabla sin mover las demás filas (posición absoluta dentro de un contenedor relativo) y no queda cortada por el scroll de la tabla.
+- Teclado: Flecha abajo y arriba mueven la opción resaltada (aria-activedescendant); Enter elige la opción resaltada y debe llamar a preventDefault para que NO envíe el formulario; Escape cierra sin elegir y devuelve el foco al botón de la celda; Tab cierra la caja, cancela el Tab (preventDefault) y devuelve el foco al botón de la celda. Con el mouse, clic en una opción la elige. La primera opción queda resaltada (fondo --campo).
+- Al elegir un producto se cierra la caja, la celda muestra su nombre y el foco vuelve al botón de la celda. Solo puede haber una caja abierta a la vez, y se cierra al hacer clic fuera de ella.
 
 4. Cálculos en pesos chilenos:
 - Al elegir un producto, la celda Valor Unitario muestra el valor del producto con formato CLP. Cuando además la cantidad es válida (Validaciones.cantidad), la celda Valor Venta muestra cantidad × valor unitario. Si falta alguno de los dos, la celda Valor Venta queda vacía.
 - Cualquier cambio de cantidad o de producto recalcula la fila y el Total al instante. Si se borra el producto, las dos celdas calculadas quedan vacías.
 - Total = suma de Valor Venta de todas las filas completas y activas.
 
-5. Cantidad máxima y errores de cantidad:
-- Si la cantidad escrita no es válida (más de 100, o vacía en una fila que ya tiene producto) la celda queda con borde rojo, aria-invalid="true" y, debajo del campo, un texto rojo corto con el mensaje de Validaciones.cantidad ("Ingrese un número entre 1 y 100."); mientras esté inválida, Valor Venta queda vacío y la fila no suma al Total. El error se quita solo al corregir. Una cantidad de 100 es válida y de 101 no.
+5. Cantidad máxima y errores de fila (el alto de las filas y de la línea inferior nunca cambia):
+- Una fila con error se marca con borde rojo en sus celdas Cantidad y Producto, aria-invalid="true" en el campo Cantidad y aria-describedby apuntando al mensaje de error de la tabla. El texto del error NO va dentro de la celda (la fila mide 44 px y la columna es angosta): va en un único <p id="detalle-error" aria-live="polite"> ubicado bajo la tabla, a la izquierda, en la misma línea del Total, con un alto mínimo reservado igual al del Total para que no mueva nada al aparecer o desaparecer. Muestra solo el error de la primera fila con error, con el formato "Fila N: mensaje". Los errores llevan texto, no solo color.
+- Cantidad con más de 100 o con un valor no válido (que no sea cero): se marca al escribir, con el mensaje de Validaciones.cantidad ("Ingrese un número entre 1 y 100."). Una cantidad de 100 es válida y de 101 no. Mientras esté inválida, Valor Venta queda vacío y la fila no suma al Total.
+- Fila con producto y cantidad vacía, o con cantidad y sin producto: se marcan solo cuando se pulsa Enviar (validar()), con "Campo obligatorio." (mensaje de Validaciones.cantidad) y "Seleccione un producto." respectivamente.
+- Un error nunca se quita por salir de un campo vacío (no valides ni limpies en blur). Solo se quita cuando la fila queda completa y válida, en blanco, o con cantidad 0, o con limpiar().
 
 6. Cantidad cero (RIU 4 y MK_35):
-- Si el usuario escribe 0 en Cantidad, la fila queda deshabilitada: el selector de producto no se puede abrir, y la fila se ve en gris (texto en gris claro, flecha apagada) como en MK_35. La celda Valor Venta muestra "$0" en gris y la fila NO suma al Total ni sale en obtener().
+- Cantidad 0 es un texto formado solo por ceros ("0", "00", "000"). Se detecta ANTES de llamar a Validaciones.cantidad (que lo da por inválido). Una fila con cantidad 0, tenga o no producto, está deshabilitada y NO es un error: no se marca en rojo, no entra en filasIncompletas, no suma al Total y no sale en obtener(). Cuenta como fila con datos (no en blanco) para "Eliminar fila".
+- La fila deshabilitada se ve en gris como en MK_35 (texto en gris claro, flecha apagada), el botón del selector queda disabled (no se puede abrir) y la celda Valor Venta muestra "$0" en gris. Si no tiene producto, Valor Unitario queda vacío.
 - El campo Cantidad de esa fila sigue editable para que el usuario pueda corregirlo: al escribir un valor de 1 a 100 la fila se reactiva y vuelve a calcular.
-- Mientras una fila tenga cantidad 0 y un producto elegido, ese producto no aparece como opción en el selector de las demás filas (esto reproduce MK_35, donde "tal" da "0 resultados").
+- Mientras una fila tenga cantidad 0 y un producto elegido, ese producto no aparece como opción en el selector de las demás filas. Ejemplo: con Tallarines en una fila con cantidad 0, buscar "tal" en otra fila muestra solo "Agua Cristal 2L" y "Tallo de Apio" ("2 resultados").
 
-7. Botón "Agregar fila": agrega una fila en blanco al final de la tabla, pasa el foco al campo Cantidad de esa fila y la lleva a la vista dentro del scroll.
+7. Botón "Agregar fila": agrega una fila en blanco al final de la tabla, pasa el foco al campo Cantidad de esa fila y la lleva a la vista dentro del scroll (el encabezado fijo no debe taparla: usa scroll-padding-top igual al alto del encabezado en el contenedor).
 
-8. Botón "Eliminar fila" (una fila en blanco es la que no tiene ni cantidad ni producto):
-- Si hay 2 o más filas en blanco: elimina la última fila en blanco de la tabla.
-- Si hay exactamente 1 fila en blanco: no elimina nada y muestra Modal.mostrar({tipo: "aviso", titulo: "Debe quedar al menos una fila en blanco", mensaje: "No es posible eliminar más filas. La tabla debe mantener como mínimo una fila en blanco disponible."}).
-- Si no hay ninguna fila en blanco (todas tienen producto o cantidad): no elimina nada y muestra Modal.mostrar({tipo: "aviso", titulo: "No se puede eliminar la fila", mensaje: "Las filas con un producto cargado no se pueden eliminar. Solo se pueden eliminar filas en blanco."}) y mientras el modal está abierto las filas con datos se resaltan con borde rojo (se quita al cerrarlo, con alCerrar).
-- Una fila con datos nunca se elimina con este botón. Al cerrar cualquiera de los dos modales el foco vuelve al botón "Eliminar fila".
+8. Botón "Eliminar fila" (una fila en blanco es la que no tiene ni cantidad ni producto; una fila con cantidad 0 NO es en blanco):
+- Si hay 2 o más filas en blanco: elimina la última fila en blanco de la tabla y el foco se queda en el botón.
+- Si hay exactamente 1 fila en blanco: no elimina nada y muestra Modal.mostrar({tipo: "aviso", titulo: "Debe quedar al menos una fila en blanco", mensaje: "No es posible eliminar más filas. La tabla debe mantener como mínimo una fila en blanco disponible.", alCerrar: [devuelve el foco al botón]}).
+- Si no hay ninguna fila en blanco (todas tienen producto o cantidad): no elimina nada y muestra Modal.mostrar({tipo: "aviso", titulo: "No se puede eliminar la fila", mensaje: "Las filas con un producto cargado no se pueden eliminar. Solo se pueden eliminar filas en blanco."}) y mientras el modal está abierto las filas con datos se resaltan con borde rojo (clase CSS, que se quita en alCerrar).
+- Una fila con datos nunca se elimina con este botón. Al cerrar cualquiera de los dos modales el foco vuelve al botón "Eliminar fila": llama a focus() sobre el botón dentro de alCerrar, sin depender de que el navegador lo haya enfocado al hacer clic. La tabla puede quedar con menos de 5 filas (como en MK_36b).
 
-9. Scroll con más de 10 filas: el contenedor de la tabla tiene una altura máxima equivalente a 10 filas más el encabezado y overflow-y: auto; con 11 o más filas aparece el scroll vertical dentro de la tabla (la página no crece), y el encabezado queda fijo arriba (position: sticky). Con menos de 11 filas no hay scroll. En pantallas angostas la tabla se desplaza horizontalmente solo dentro de su contenedor (la página nunca tiene scroll horizontal).
+9. Scroll con más de 10 filas: el contenedor de la tabla tiene una altura máxima de 10 filas más el encabezado (10 × 44 px + 56 px) y overflow-y: auto; con 11 o más filas aparece el scroll vertical dentro de la tabla (la página no crece), y el encabezado queda fijo arriba (position: sticky). Con 10 filas o menos no hay scroll (ni siquiera de 1 px por los bordes). En pantallas angostas la tabla se desplaza horizontalmente solo dentro de su contenedor (la página nunca tiene scroll horizontal).
 
 10. Métodos de window.PedidoDetalle:
 - obtener(): devuelve solo las filas con producto elegido y cantidad válida de 1 a 100 (las de cantidad 0 o en blanco no salen). Cada una con cantidad (número), productoNumero, producto (nombre), valorUnitario y valorVenta (números).
-- validar(): devuelve {valido, sinProductos, filasIncompletas}. sinProductos es true si obtener() está vacío. filasIncompletas cuenta las filas que tienen solo uno de los dos datos (cantidad o producto) o cantidad inválida; esas filas se resaltan con borde rojo y aria-invalid. valido es true solo si hay al menos un producto y ninguna fila incompleta. Una fila en blanco no es error.
+- validar(): devuelve {valido, sinProductos, filasIncompletas}. sinProductos es true si obtener() está vacío. filasIncompletas cuenta las filas que tienen solo uno de los dos datos (cantidad o producto) o cantidad inválida (no cuentan las filas con cantidad 0); esas filas se resaltan con borde rojo, aria-invalid y el mensaje de la condición 5. valido es true solo si hay al menos un producto y ninguna fila incompleta. Una fila en blanco o con cantidad 0 no es error.
 - limpiar(): deja 5 filas en blanco, sin errores, y el Total en $0.
 - cargar(detalle): vacía la tabla, carga una fila por cada línea del detalle (cantidad, producto y los valores guardados en la línea; valorUnitario y valorVenta se muestran con los valores de la línea, no con los actuales del catálogo) y agrega filas en blanco hasta tener al menos 5 filas y al menos 1 en blanco. Si el producto de una línea ya no está disponible en el selector, igual se muestra con su nombre.
 - total(): el Total actual como número.
+- enfocarError(): como se describe en el contrato.
 
-11. Integración con el formulario del P5 (no reescribas pedidos.js; solo si hace falta un ajuste mínimo para que funcione, indícalo): al pulsar Enviar, window.PedidoDetalle.validar() decide si se muestra el modal "Campos obligatorios"; al guardar, el pedido lleva detalle = obtener() y total = Datos.calcularTotal(detalle); y Borrar con confirmación llama a limpiar().
+11. Integración con el formulario del P5 (no reescribas pedidos.js): al pulsar Enviar, window.PedidoDetalle.validar() decide si se muestra el modal "Campos obligatorios"; al guardar, el pedido lleva detalle = obtener() y total = Datos.calcularTotal(detalle); y Borrar con confirmación llama a limpiar(). Ajuste mínimo permitido en js/pedidos.js, que entregarás aparte y registrarás: en la función enfocarPrimerCampoConError, si ningún campo del cliente tiene error, llamar a window.PedidoDetalle.enfocarError() (si existe) antes de caer al id alternativo "nombre". Así, cuando solo falla la tabla, al cerrar el modal el foco va a la fila con error y no a Nombre.
 
-12. css/styles.css: agrega solo las reglas nuevas (clases que empiecen con .detalle-, .selector-producto y .tabla-detalle). Reutiliza .boton, .boton--azul, los tokens y el estilo de foco existente. Las celdas de cantidad y producto con fondo blanco y texto azul; el borde de las celdas con --borde-tabla; el foco de las celdas con el mismo anillo del resto del proyecto.
+12. css/styles.css: agrega solo las reglas nuevas (clases que empiecen con .detalle-, .selector-producto y .tabla-detalle). Reutiliza .boton, .boton--azul, los tokens y el estilo de foco existente. Las celdas de cantidad y producto con fondo blanco y texto azul; el borde de las celdas con --borde-tabla; el foco de las celdas e inputs con el mismo anillo del resto del proyecto (outline de 3px azul).
 
 13. Accesibilidad y responsivo:
 - Contraste mínimo WCAG AA (texto azul sobre --gris-calculado incluido). Cada campo y cada selector tiene un nombre accesible con el número de fila. Los errores llevan texto, no solo color.
@@ -1191,9 +1200,9 @@ Programa la tabla Detalle Pedido. No modifiques js/layout.js, js/auth.js, js/aut
 
 RAZONAMIENTO PASO A PASO
 Antes de escribir el código, explica brevemente en una lista numerada:
-1. Cómo guardas el estado de cada fila (cantidad, producto elegido, estado de error y fila deshabilitada) y cómo recalculas una fila y el Total sin repetir código.
+1. Cómo guardas el estado de cada fila (cantidad, producto elegido, estado de error y fila deshabilitada) y cómo recalculas una fila, el mensaje de error y el Total sin repetir código.
 2. Cómo filtras las opciones del selector (productos pedibles, búsqueda desde 3 letras y exclusión de productos en filas con cantidad 0).
-3. Cómo implementas el teclado del selector y cómo evitas que la caja abierta quede cortada por el scroll de la tabla.
+3. Cómo implementas el teclado del selector, dónde ubicas la caja abierta y cómo calculas su posición para que no quede cortada por el scroll de la tabla.
 4. Cómo decides qué hace "Eliminar fila" en cada uno de los tres casos.
 Después de esta explicación, entrega el código.
 
@@ -1201,10 +1210,11 @@ E – ESTRUCTURA (FORMATO DE SALIDA)
 Entrega cada archivo en un bloque de código separado, encabezado por su ruta exacta:
 - js/pedido-detalle.js (completo).
 - views/pedidos.html (completo, con la etiqueta <script> nueva).
+- js/pedidos.js (solo la función enfocarPrimerCampoConError modificada, indicando cuál reemplaza).
 - css/styles.css (solo las reglas nuevas, indicando que se agregan al final).
 - assets/img/flecha-abajo.svg y assets/img/flecha-arriba.svg (completos).
 Comentarios claros en español dentro del código. Al final agrega:
-(a) Una lista breve de supuestos técnicos (por ejemplo, qué pasa con una fila cuyo producto ya no está disponible al cargar un pedido, y que se permite repetir producto en filas distintas).
+(a) Una lista breve de supuestos técnicos (por ejemplo, qué pasa con una fila cuyo producto ya no está disponible al cargar un pedido, que se permite repetir producto en filas distintas y que las coordenadas de la caja se asignan con elemento.style).
 (b) Una checklist que verifique una por una las 14 condiciones de la sección C.
 
 T – TONO
