@@ -7,6 +7,8 @@
     --texto-secundario: #595959;
     --rojo: #DB0B00;
     --gris-deshabilitado: #9E9E9E;
+    --gris-calculado: #E5E5E5;
+    --borde-tabla: #D9D9D9;
     --fuente: "Geist", sans-serif;
     --tam-titulo: 20px;
     --tam-texto: 14px;
@@ -535,5 +537,72 @@ button:focus-visible {
         align-items: flex-start;
         flex-direction: column;
         gap: 8px;
+    }
+}
+
+/* Botones compartidos del perfil user */
+
+.boton {
+    min-width: 120px;
+    min-height: 40px;
+    border-radius: 0;
+    cursor: pointer;
+    font-family: var(--fuente);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 16px;
+}
+
+.boton--azul {
+    border: 0;
+    background: var(--azul-marca);
+    color: var(--blanco);
+}
+
+.boton--rojo {
+    border: 0;
+    background: var(--rojo);
+    color: var(--blanco);
+}
+
+.boton--borde {
+    border: 1px solid var(--azul-marca);
+    background: transparent;
+    color: var(--azul-marca);
+}
+
+.boton:disabled {
+    border: 0;
+    background: var(--gris-deshabilitado);
+    color: var(--blanco);
+    cursor: not-allowed;
+}
+
+.modal--exito {
+    /* Variante visual que comparte el diseño base del modal. */
+}
+
+.modal--aviso .modal__titulo,
+.modal--aviso .modal__mensaje {
+    color: var(--azul-marca);
+}
+
+.modal__acciones {
+    gap: 16px;
+}
+
+@media (max-width: 375px) {
+    .modal:has(.boton) {
+        padding-right: 16px;
+        padding-left: 16px;
+    }
+
+    .modal:has(boton) .modal__acciones {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .modal:has(boton) .modal__acciones .boton {
+        width: 100%;
     }
 }
