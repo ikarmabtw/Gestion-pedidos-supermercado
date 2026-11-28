@@ -37,7 +37,7 @@ Reglas del equipo:
 | P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | Reemplazado por P2-b |Ivania|
 | P2-b|   2   | 2    | Login, bloqueo a 3 intentos y modales| Completado | Carlos|
 | P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | Reemplazado por P3-b | Matías|
-| P3-b  |   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|[pendiente]|Matías|
+| P3-b  |   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|Completado|Matías|
 
 
 ## P1 - Plantilla base HEAD / BODY / FOOT (RIU 1)
@@ -430,8 +430,8 @@ Nota: el CP17 (foco y Escape en los modales de error) se retiró del plan y no s
 ---
 
 ## P3 - Perfiles, menús y bloqueo por URL directa (RIU 3, 8, 9, 10)
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
+- **Fecha:** 24-11-2027
+- **Herramienta:** Geminis + Claude
 - **Ejecutado por:** Matías
 - **Hito / RIU:** Hito 2 / RIU 3, RIU 8, RIU 9 y RIU 10
 - **Origen:** evolución de la plantilla base del Hito 2, ampliada para incorporar control de acceso basado en roles, segregación de menús y bloqueo por URL directa.
@@ -506,8 +506,8 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 
 ## P3-b - Perfiles, bienvenida por perfil y bloqueo por URL directa (RIU 2, 3, 8, 9, 10), versión corregida
 
-- **Fecha:** [pendiente]
-- **Herramienta:** [pendiente]
+- **Fecha:** 27-11-2026
+- **Herramienta:** Copilot + Claude + correciones manuales
 - **Ejecutado por:** Matías
 - **Hito / RIU:** Hito 2 / RIU 2, RIU 3, RIU 8, RIU 9 y RIU 10
 - **Origen:** corrección del P3, que no se ejecutó. Se alinea con el código que ya existe (P1 y P2-b) y con los mockups MK_04 y MK_05 (dashboard por perfil) y MK_22 y MK_34 (acceso restringido).
@@ -610,42 +610,49 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 ```
 
 ### Resultado generado
-[pendiente: se completa después de ejecutar el prompt]
+Copilot entregó los siguientes archivos:
+
+- `js/auth-guard.js` (nuevo): mapa único de permisos por vista; oculta la página hasta confirmar el acceso; redirige a `index.html` si no hay sesión válida; redirige al dashboard con la marca `acceso_restringido` si el perfil no tiene permiso; muestra el modal "Acceso restringido" en el dashboard y vuelve a comprobar al usar el botón Atrás.
+- `js/app.js`: encabezado del dashboard por perfil ("Panel de usuario" o "Panel de administrador") con el saludo "Bienvenido, nombre" en azul.
+- `css/styles.css`: reglas nuevas para `.panel-encabezado` y `.panel-bienvenida`, con una columna en pantallas de hasta 700 px.
+- `views/*.html` (6 vistas): se agregó el `<script>` del guardia en el `<head>`; `dashboard.html` además enlaza `app.js`.
+
+No se modificaron `js/layout.js`, `js/auth.js` ni `js/validaciones.js`. El código cumplió las condiciones del prompt y no produjo errores en la consola; lo único que no coincidía con los mockups era el estilo de los botones del menú.
 
 ### Problemas detectados al probarlo
-- [pendiente]
+Al comparar el dashboard y el modal con MK_04, MK_05, MK_22 y MK_34:
+
+- Los botones del menú salían todos blancos con texto azul, y el de la vista actual llevaba una franja azul abajo. En los mockups el botón de la vista actual es blanco con texto azul y los demás son transparentes con borde y texto blancos. 
 
 ### Correcciones manuales
 
 | N° | Problema | Archivo | Corrección | Por qué |
 |----|----------|---------|------------|---------|
-| 1 | | | | |
+| 1  | Botones del menú todos blancos y la vista actual con franja azul | css/styles.css (.menu-principal a, .menu-principal a[aria-current="page"], .menu-principal a:hover) | Botones normales con fondo transparent y texto --blanco; la vista actual con fondo --blanco y texto --azul-marca (se quitó el box-shadow); en :hover se agregó color: var(--azul-marca) |Igualar lo establecido en MOCKUPS, y mantener el texto legible al pasar el mouse |
 
 ### Validación
 
-Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P3b-CPxx-nombre.png`.
-
 | ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
 |----|------|------|-----|--------|--------------------|----------------|----|
-| CP01 | Validación | Negativo | 2 y 5 | Abrir `views/dashboard.html` sin sesión | Redirige a `index.html` sin mostrar contenido | | |
-| CP02 | Validación | Negativo | 2 y 5 | Abrir sin sesión `pedidos`, `pedidos-ingresados`, `productos`, `producto-form` y `procesamiento` (una por una) | Las cinco redirigen a `index.html` | | |
-| CP03 | Validación | Límite | 2 y 5 | Con `sesion` = `"esto no es json"`, abrir `views/pedidos.html` | Redirige a `index.html`, sin errores en consola | | |
-| CP04 | Validación | Límite | 3 y 10 | Con `sesion` = `{"perfil":"superadmin"}`, abrir `views/productos.html` | Redirige a `index.html` | | |
-| CP05 | Validación | Positivo | 2, 3 y 9 | Entrar como `user` | Dashboard con "Panel de usuario", "Bienvenido, [nombre]" en azul y menú Home, Pedidos, Pedidos Ingresados | | |
-| CP06 | Validación | Positivo | 2, 3 y 8 | Entrar como `admin` | Dashboard con "Panel de administrador", "Bienvenido, [nombre]" en azul y menú Home, Productos, Procesamiento de Pedido | | |
-| CP07 | Validación | Positivo | 9 | Con `user`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Ambas cargan normalmente | | |
-| CP08 | Validación | Positivo | 8 | Con `admin`, abrir `productos.html`, `producto-form.html` y `procesamiento.html` por URL | Las tres cargan normalmente | | |
-| CP09 | Validación | Negativo | 10 | Con `user`, abrir `views/productos.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido"; Productos no se ve | | |
-| CP10 | Validación | Negativo | 10 | Con `user`, abrir `producto-form.html` y `procesamiento.html` por URL | Igual que CP09 en ambas | | |
-| CP11 | Validación | Negativo | 10 | Con `admin`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido" | | |
-| CP12 | Validación | Positivo | 10 | Comparar el modal con `MK_22` (user) y `MK_34` (admin) | Ícono a la izquierda del título, sin borde rojo, botón Volver rojo a la derecha | | |
-| CP13 | Validación | Límite | 10 | En el modal: ver el foco, presionar Tab, Escape y Volver | Foco en Volver; Tab no sale del modal; Escape y Volver lo cierran y se queda en el dashboard | | |
-| CP14 | Validación | Límite | 10 | Tras cerrar el modal, recargar con F5 | El modal no reaparece | | |
-| CP15 | Validación | Límite | 10 | Con `user`, abrir `views/productos.html?x=1#abc` | Se bloquea igual que CP09 | | |
-| CP16 | Validación | Límite | 2 y 10 | Entrar como `admin`, abrir Productos, cerrar sesión y presionar Atrás | No se ve Productos; termina en `index.html` | | |
-| CP17 | Verificación | Positivo | 2 | Botón Cerrar sesión en las 6 vistas, con `user` y con `admin` | Visible arriba a la derecha y vuelve a `index.html` | | |
-| CP18 | Verificación | Positivo | 1 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/validaciones.js` | Sin cambios | | |
-| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos; consola abierta en las 7 páginas | 0 resultados y consola sin errores | | |
-| CP20 | Validación | Límite | 2 | Anchos de 375 y 320 px en el dashboard y en el modal | Encabezado y modal adaptados, sin scroll horizontal | | |
+| CP01 | Validación | Negativo | 2 y 5 | Abrir `views/dashboard.html` sin sesión | Redirige a `index.html` sin mostrar contenido | Al abrir `views/dashboard.html` sin sesión redirige a `index.html` y no se ve el panel. (Sin captura.) | Sí |
+| CP02 | Validación | Negativo | 2 y 5 | Abrir sin sesión `pedidos`, `pedidos-ingresados`, `productos`, `producto-form` y `procesamiento` (una por una) | Las cinco redirigen a `index.html` | Las cinco vistas redirigen a `index.html` sin mostrar contenido. (Sin captura.) | Sí |
+| CP03 | Validación | Límite | 2 y 5 | Con `sesion` = `"esto no es json"`, abrir `views/pedidos.html` | Redirige a `index.html`, sin errores en consola | Redirige a `index.html` y la consola no muestra errores. (Sin captura.) | Sí |
+| CP04 | Validación | Límite | 3 y 10 | Con `sesion` = `{"perfil":"superadmin"}`, abrir `views/productos.html` | Redirige a `index.html` | El perfil no válido se trata como sin sesión y redirige a `index.html`. (Sin captura.) | Sí |
+| CP05 | Validación | Positivo | 2, 3 y 9 | Entrar como `user` | Dashboard con "Panel de usuario", "Bienvenido, [nombre]" en azul y menú Home, Pedidos, Pedidos Ingresados | El dashboard muestra "Panel de usuario" a la izquierda y "Bienvenido, User Mercado Sur" en azul (#0057B8) a la derecha, en la misma fila. El menú muestra Home, Pedidos y Pedidos Ingresados. Captura: `P3b-CP05-dashboard-user.png`. | Sí |
+| CP06 | Validación | Positivo | 2, 3 y 8 | Entrar como `admin` | Dashboard con "Panel de administrador", "Bienvenido, [nombre]" en azul y menú Home, Productos, Procesamiento de Pedido | El dashboard muestra "Panel de administrador" y "Bienvenido, Administrador Mercado Sur" en azul. El menú muestra Home, Productos y Procesamiento de Pedido. Captura: `P3b-CP06-dashboard-admin.png`. | Sí |
+| CP07 | Validación | Positivo | 9 | Con `user`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Ambas cargan normalmente | Ambas vistas cargan normalmente, sin modal ni redirección. (Sin captura.) | Sí |
+| CP08 | Validación | Positivo | 8 | Con `admin`, abrir `productos.html`, `producto-form.html` y `procesamiento.html` por URL | Las tres cargan normalmente | Las tres vistas cargan normalmente, sin modal ni redirección. (Sin captura.) | Sí |
+| CP09 | Validación | Negativo | 10 | Con `user`, abrir `views/productos.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido"; Productos no se ve | Redirige al dashboard y muestra el modal "Acceso restringido" con "No tiene permisos para acceder a esta sección."; la vista Productos no se ve. Captura: `P3b-CP09-user-bloqueo-productos.png`. | Sí |
+| CP10 | Validación | Negativo | 10 | Con `user`, abrir `producto-form.html` y `procesamiento.html` por URL | Igual que CP09 en ambas | En ambas redirige al dashboard y muestra el modal "Acceso restringido". (Sin captura; es la misma pantalla de CP09.) | Sí |
+| CP11 | Validación | Negativo | 10 | Con `admin`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido" | En ambas redirige al dashboard y muestra el modal "Acceso restringido". Captura: `P3b-CP11-admin-bloqueo-pedidos.png`. | Sí |
+| CP12 | Validación | Positivo | 10 | Comparar el modal con `MK_22` (user) y `MK_34` (admin) | Ícono a la izquierda del título, sin borde rojo, botón Volver rojo a la derecha | Es el mismo modal de CP09 (user) y CP11 (admin) y coincide con MK_22 y MK_34: ícono de alerta a la izquierda del título, sin borde rojo, capa gris detrás y botón rojo "Volver" a la derecha. Se revisó en las capturas de CP09 y CP11. | Sí |
+| CP13 | Validación | Límite | 10 | En el modal: ver el foco, presionar Tab, Escape y Volver | Foco en Volver; Tab no sale del modal; Escape y Volver lo cierran y se queda en el dashboard | Al abrirse el foco queda en "Volver" y Tab no sale del modal. Escape y Volver lo cierran, se queda en el dashboard y el foco pasa al título "Panel de usuario". (Sin captura.) | Sí |
+| CP14 | Validación | Límite | 10 | Tras cerrar el modal, recargar con F5 | El modal no reaparece | Tras cerrar el modal y recargar con F5 el modal no reaparece. (Sin captura.) | Sí |
+| CP15 | Validación | Límite | 10 | Con `user`, abrir `views/productos.html?x=1#abc` | Se bloquea igual que CP09 | Se bloquea igual que CP09: redirige al dashboard y muestra el modal "Acceso restringido". (Sin captura.) | Sí |
+| CP16 | Validación | Límite | 2 y 10 | Entrar como `admin`, abrir Productos, cerrar sesión y presionar Atrás | No se ve Productos; termina en `index.html` | Después de cerrar sesión y presionar Atrás no se ve Productos y termina en `index.html`. (Sin captura.) | Sí |
+| CP17 | Verificación | Positivo | 2 | Botón Cerrar sesión en las 6 vistas, con `user` y con `admin` | Visible arriba a la derecha y vuelve a `index.html` | Se probó en las vistas que cada perfil puede abrir (3 con `user` y 4 con `admin`; en las demás el guardia redirige). El botón se ve arriba a la derecha, elimina `sesion` y vuelve a `index.html` en todas. (Sin captura.) | Sí |
+| CP18 | Verificación | Positivo | 1 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/validaciones.js` | Sin cambios | El comando no muestra cambios en los tres archivos. (Sin captura.) | Sí |
+| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos; consola abierta en las 7 páginas | 0 resultados y consola sin errores | La búsqueda en los `.html`, `.js` y `.css` da 0 resultados y la consola no muestra errores en `index.html` ni en las vistas. (Sin captura.) | Sí |
+| CP20 | Validación | Límite | 2 | Anchos de 375 y 320 px en el dashboard y en el modal | Encabezado y modal adaptados, sin scroll horizontal | A 375 y 320 px el dashboard y el modal "Acceso restringido" aparecen y se adaptan al ancho, sin scroll horizontal; el saludo pasa debajo del título. Capturas: `P3b-CP20-375-modal.png` y `P3b-CP20-320-modal.png`. | Sí |
 
 ---
