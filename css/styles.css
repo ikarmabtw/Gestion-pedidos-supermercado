@@ -121,8 +121,8 @@ button:focus-visible {
     min-height: 40px;
     border: 1px solid var(--blanco);
     border-radius: 4px;
-    background: var(--blanco);
-    color: var(--azul-marca);
+    background: transparent;
+    color: var(--blanco);
     font-size: var(--tam-texto);
     font-weight: 600;
     line-height: 38px;
@@ -131,11 +131,13 @@ button:focus-visible {
 }
 
 .menu-principal a[aria-current="page"] {
-    box-shadow: inset 0 -4px 0 var(--azul-marca);
+    background: var(--blanco);
+    color: var(--azul-marca);
 }
 
 .menu-principal a:hover {
     background: var(--campo);
+    color: var(--azul-marca);
 }
 
 /* BODY */
