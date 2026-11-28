@@ -1172,3 +1172,9 @@ button:focus-visible {
     color: var(--texto-secundario);
     font-size: var(--tam-texto);
 }
+
+
+/* Corrección P7: el mensaje del modal parte textos largos sin espacios */
+.modal__mensaje {
+    overflow-wrap: anywhere;
+}
