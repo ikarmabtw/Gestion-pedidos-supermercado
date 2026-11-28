@@ -36,7 +36,8 @@ Reglas del equipo:
 | P1  |   2   | 1    | Plantilla base HEAD/BODY/FOOT | Completado | Carlos |
 | P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | Reemplazado por P2-b |Ivania|
 | P2-b|   2   | 2    | Login, bloqueo a 3 intentos y modales| Completado | Carlos|
-| P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | [pendiente] | Matías|
+| P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | Reemplazado por P3-b | Matías|
+| P3-b  |   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|[pendiente]|Matías|
 
 
 ## P1 - Plantilla base HEAD / BODY / FOOT (RIU 1)
@@ -503,25 +504,148 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 
 ```
 
+## P3-b - Perfiles, bienvenida por perfil y bloqueo por URL directa (RIU 2, 3, 8, 9, 10), versión corregida
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** Matías
+- **Hito / RIU:** Hito 2 / RIU 2, RIU 3, RIU 8, RIU 9 y RIU 10
+- **Origen:** corrección del P3, que no se ejecutó. Se alinea con el código que ya existe (P1 y P2-b) y con los mockups MK_04 y MK_05 (dashboard por perfil) y MK_22 y MK_34 (acceso restringido).
+- **Cambios respecto al P3:** (1) se quita la segregación de menús, porque `js/layout.js` ya la hace desde el P1; pasa a ser solo una verificación; (2) se quita el cierre de sesión, porque ya está en `js/auth.js` desde el P2-b; (3) el guardia de rutas se define como archivo nuevo `js/auth-guard.js`, sin tocar `layout.js`; (4) el modal de acceso denegado sigue MK_22 y MK_34 ("Acceso restringido", sin borde rojo) y reutiliza las clases de modal que ya existen; (5) el bloqueo redirige al dashboard del perfil y muestra el modal ahí, como en MK_22, así el contenido protegido nunca se muestra; (6) se agrega el encabezado del dashboard ("Panel de usuario" o "Panel de administrador" y el saludo "Bienvenido, nombre"), de MK_04 y MK_05; las tarjetas con cifras se programan en los Hitos 3 y 4, cuando existan datos; (7) se agrega la protección contra el botón Atrás del navegador después de cerrar sesión; (8) se actualiza el contexto (el login ya existe) y la tabla de validación incluye casos negativos y de límite.
+- **Archivos afectados:** `js/auth-guard.js` (nuevo), `js/app.js` (hoy vacío), `css/styles.css` (solo reglas nuevas) y las 6 vistas de `views/` (etiqueta `<script>` del guardia en el `<head>`; `dashboard.html` además enlaza `app.js`). No se modifican `js/layout.js`, `js/auth.js` ni `js/validaciones.js`.
+
+### Prompt completo
+
+```
+R – ROL
+Actúa como desarrollador frontend senior experto en HTML5 semántico, CSS3 y JavaScript puro (ES6+), especializado en control de acceso en el cliente (perfiles y rutas), accesibilidad web (WCAG AA) y código simple y comentado para estudiantes principiantes.
+
+E – ENFOQUE
+Continuamos el Sistema de Gestión de Pedidos de la cadena de supermercados Mercado Sur. Estado actual del proyecto (NO se reescribe):
+- Plantilla base: js/layout.js genera una sola vez el HEAD y el FOOT, arma los menús según el perfil de la sesión y marca la vista actual con aria-current="page". También crea el botón Cerrar sesión (id="btn-logout") cuando hay sesión.
+- Login: index.html y js/auth.js. auth.js guarda la sesión, programa el clic de #btn-logout (elimina "sesion" de sessionStorage y vuelve a index.html) y está cargado en las 7 páginas. Usuarios de prueba: admin / admin1234 y user / user1234.
+- Cada vista de views/ tiene <body data-raiz="../" data-vista="..."> con data-vista igual a dashboard, pedidos, pedidos-ingresados, productos, producto-form o procesamiento, y contiene <header id="app-header">, <main id="contenido" class="contenido-principal"> y <footer id="app-footer">. Hoy los scripts van al final del <body>: primero layout.js y luego auth.js.
+- css/styles.css ya define los tokens de diseño y los estilos del modal: .modal-capa, .modal, .modal__icono, .modal__titulo, .modal__mensaje, .modal__acciones y .modal__volver.
+- Contrato de sesión: sessionStorage["sesion"] = {"usuario": "...", "nombre": "...", "perfil": "admin" | "user"}.
+
+Requerimientos que se implementan (texto del documento de requerimientos):
+- RIU 2: una vez logado, se carga una vista tipo dashboard cuyo BODY muestra "Bienvenido USUARIO (nombre del usuario)" y las opciones del menú según el tipo de usuario; el botón Cerrar sesión debe estar siempre visible arriba a la derecha.
+- RIU 3: existen dos tipos de usuario, user y admin, con perfiles y funcionalidades distintas.
+- RIU 5: la vista Pedidos Ingresados solo se carga cuando el usuario se loga exitosamente; de lo contrario permanece oculta.
+- RIU 8: el perfil admin solo carga Home, Productos y Procesamiento de Pedido.
+- RIU 9: el perfil user solo carga Home, Pedidos y Pedidos Ingresados.
+- RIU 10: admin no puede acceder a las funcionalidades de user, y user no puede acceder a las de admin.
+
+Mockups de referencia:
+- MK_04 (dashboard user) y MK_05 (dashboard admin): en la misma fila, el título "Panel de usuario" o "Panel de administrador" a la izquierda y el saludo "Bienvenido, nombre" en azul a la derecha. Debajo hay tarjetas con cifras: NO se programan en este prompt.
+- MK_22 (user) y MK_34 (admin): el dashboard del perfil con la capa oscura y un modal centrado con ícono de alerta a la izquierda del título "Acceso restringido", el mensaje "No tiene permisos para acceder a esta sección." y un botón rojo "Volver" a la derecha. Sin borde rojo, con el mismo diseño de los modales de login.
+
+Restricciones técnicas:
+- HTML5, CSS3 y JavaScript puro. Prohibido usar frameworks, librerías o CDN.
+- Prohibido CSS o JS embebido: nada de <style>, <script> con código dentro del HTML, atributos onclick ni style="".
+- Prohibido usar fetch() (el proyecto se abre con doble clic o Live Server).
+- Prohibido usar innerHTML: crea los elementos con createElement y textContent.
+- Rutas relativas: en views/ llevan ../ y se leen de data-raiz.
+- Tokens de diseño: azul #0057B8, blanco #FFFFFF, celeste #CCD8E8, texto #1F1F1F, texto secundario #595959, rojo #DB0B00. Fuente Geist local. Encabezados de 20 px, textos de 14 px. No agregues colores nuevos.
+- Comentarios en español y código simple.
+
+C – CLARIDAD EN LA TAREA
+Programa el control de acceso por perfil y el encabezado del dashboard. NO modifiques js/layout.js, js/auth.js ni js/validaciones.js. NO vuelvas a programar los menús ni el cierre de sesión: ya existen. Cumple estas condiciones verificables:
+
+1. Mapa de permisos y archivo nuevo js/auth-guard.js:
+- Define un único objeto de permisos indexado por data-vista, por ejemplo: dashboard: ["admin","user"], pedidos: ["user"], "pedidos-ingresados": ["user"], productos: ["admin"], "producto-form": ["admin"], procesamiento: ["admin"]. Sin condicionales repetidos por vista. Una vista que no aparezca en el mapa se trata como no permitida.
+- El script se carga en el <head> de cada vista de views/, sin defer ni async, y lo primero que hace es ocultar la página (document.documentElement.hidden = true) para que no se vea ni un instante contenido no autorizado. Solo la muestra (hidden = false) cuando el acceso queda confirmado, una vez cargado el DOM (DOMContentLoaded).
+- La sesión se lee con sessionStorage.getItem("sesion") dentro de un try/catch. La sesión es válida solo si es un objeto con perfil "admin" o "user".
+
+2. Sin sesión válida (RIU 2 y 5):
+- Si no existe "sesion", el JSON es inválido o el perfil no es "admin" ni "user", y se abre cualquier vista de views/, redirige de inmediato a ../index.html con location.replace, sin mostrar contenido.
+
+3. Acceso cruzado por URL directa (RIU 10):
+- Si hay sesión válida pero el perfil no está permitido en esa vista (user en productos, producto-form o procesamiento; admin en pedidos o pedidos-ingresados), guarda sessionStorage["acceso_restringido"] = "1" y redirige con location.replace a dashboard.html (respetando data-raiz). El contenido de la vista protegida nunca se muestra.
+- Al cargar views/dashboard.html con sesión válida, si existe esa marca, la elimina y muestra el modal de acceso restringido.
+
+4. Modal de acceso restringido:
+- Estructura idéntica a los modales del login: <div class="modal-capa"> con un <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="modal-titulo" aria-describedby="modal-mensaje"> que contiene <img class="modal__icono" src="[raiz]assets/img/alerta.svg" alt="" aria-hidden="true">, <h2 class="modal__titulo" id="modal-titulo">Acceso restringido</h2>, <p class="modal__mensaje" id="modal-mensaje">No tiene permisos para acceder a esta sección.</p> y <div class="modal__acciones"> con un único <button type="button" class="modal__volver">Volver</button>.
+- Reutiliza las clases de css/styles.css que ya existen: no escribas CSS nuevo para el modal ni agregues borde rojo.
+- Al abrirse, el foco queda en "Volver" y Tab no puede salir del modal. Tanto Volver como Escape cierran el modal y dejan al usuario en el dashboard.
+
+5. Encabezado del dashboard por perfil (RIU 2 y 3), en js/app.js:
+- Solo actúa si data-vista es "dashboard" y hay sesión válida. Dentro de <main id="contenido"> cambia el <h1> a "Panel de usuario" (perfil user) o "Panel de administrador" (perfil admin) y agrega a su derecha, en la misma fila, el saludo "Bienvenido, " seguido de sesion.nombre (si el nombre viene vacío, usa sesion.usuario), en color azul #0057B8 con tamaño de 20 px y peso normal.
+- No programes las tarjetas con cifras ni lo que va debajo del encabezado.
+- En css/styles.css agrega solo las reglas nuevas necesarias para esta fila (por ejemplo .panel-encabezado y .panel-bienvenida): título y saludo en una fila con espacio entre ambos; en pantallas de hasta 700 px, uno debajo del otro.
+
+6. Botón Atrás del navegador:
+- Si la página se restaura desde la caché al presionar Atrás (evento pageshow con event.persisted verdadero), vuelve a ejecutar la comprobación (por ejemplo con window.location.reload()), de modo que después de cerrar sesión no se vea una vista protegida.
+
+7. Accesibilidad y responsivo:
+- Contraste mínimo WCAG AA. Al cerrar el modal, el foco pasa al <h1> del dashboard (agrega tabindex="-1" por JS).
+- Sin scroll horizontal en anchos de 375 y 320 px.
+
+8. Verificación (no programes nada nuevo): confirma en la checklist que el menú por perfil (RIU 8 y 9) y el botón Cerrar sesión (RIU 2) siguen funcionando sin cambios de código.
+
+RAZONAMIENTO PASO A PASO
+Antes de escribir el código, explica brevemente en una lista numerada:
+1. Cómo organizas el mapa de permisos para evitar condicionales repetidos en cada HTML.
+2. En qué orden se ejecutan auth-guard.js, layout.js, auth.js y app.js al cargar una vista, y por qué nunca se muestra contenido no autorizado.
+3. Cómo pasas el aviso de acceso restringido desde la vista bloqueada hasta el dashboard, y cómo evitas que el modal reaparezca al recargar.
+4. Cómo resuelves las rutas relativas ("" y "../") en las redirecciones y en la imagen del ícono.
+Después de esta explicación, entrega el código.
+
+E – ESTRUCTURA (FORMATO DE SALIDA)
+Entrega cada archivo en un bloque de código separado, encabezado por su ruta exacta:
+- js/auth-guard.js (completo).
+- js/app.js (completo).
+- css/styles.css (solo las reglas nuevas, indicando que se agregan al final).
+- views/dashboard.html (completo, con auth-guard.js en el <head> y layout.js, auth.js y app.js al final del <body>).
+- views/productos.html (completo, como ejemplo de vista protegida). Aclara que las otras 4 vistas llevan la misma línea del <head>.
+Comentarios claros en español dentro del código. Al final agrega:
+(a) Una lista breve de supuestos técnicos (por ejemplo, cómo simular ambos perfiles desde la consola antes de probar con el login).
+(b) Una checklist que verifique una por una las 8 condiciones de la sección C.
+
+T – TONO
+Profesional, claro y funcional. Explicaciones breves y directas, sin relleno. No agregues elementos que no estén justificados por los requerimientos o los mockups.
+
+A – AUDIENCIA
+Estudiantes de segundo año de Ingeniería Informática, principiantes en desarrollo web, que van a leer, probar y corregir el código a mano. Por eso: simple y comentado. Los usuarios finales son personal de una cadena de supermercados con distintos niveles de experiencia tecnológica.
+```
+
 ### Resultado generado
 [pendiente: se completa después de ejecutar el prompt]
 
 ### Problemas detectados al probarlo
 - [pendiente]
 
-### Correciones manuales
-|N°  | Problema  | Archivo  | Correción  | Por qué  |
-|----|-----------|----------|------------|----------|
-| 1  | | | | |
+### Correcciones manuales
 
-### Validación 
+| N° | Problema | Archivo | Corrección | Por qué |
+|----|----------|---------|------------|---------|
+| 1 | | | | |
 
-|Prueba  | Resultado Esperado  | Resultado Real  | OK  |
-|--------|---------------------|-----------------|-----|
-| Abrir una vista de `views/` sin sesión en `sessionStorage` | Redirección inmediata a `../index.html` sin mostrar contenido |  |  |
-| Simular sesión `user` en `views/dashboard.html` | Menú con Home, Pedidos, Pedidos Ingresados |  |  |
-| Simular sesión `admin` en `views/dashboard.html` | Menú con Home, Productos, Procesamiento de Pedido |  |  |
-| Abrir `views/productos.html` por URL con sesión `user` | Contenido oculto |  |  |
-| Abrir `views/pedidos.html` por URL con sesión `admin` | Contenido oculto |  |  |
-| Presionar el botón "Cerrar sesión" | Elimina `"sesion"` de `sessionStorage` y redirige a `index.html` |  |  |
+### Validación
+
+Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P3b-CPxx-nombre.png`.
+
+| ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
+|----|------|------|-----|--------|--------------------|----------------|----|
+| CP01 | Validación | Negativo | 2 y 5 | Abrir `views/dashboard.html` sin sesión | Redirige a `index.html` sin mostrar contenido | | |
+| CP02 | Validación | Negativo | 2 y 5 | Abrir sin sesión `pedidos`, `pedidos-ingresados`, `productos`, `producto-form` y `procesamiento` (una por una) | Las cinco redirigen a `index.html` | | |
+| CP03 | Validación | Límite | 2 y 5 | Con `sesion` = `"esto no es json"`, abrir `views/pedidos.html` | Redirige a `index.html`, sin errores en consola | | |
+| CP04 | Validación | Límite | 3 y 10 | Con `sesion` = `{"perfil":"superadmin"}`, abrir `views/productos.html` | Redirige a `index.html` | | |
+| CP05 | Validación | Positivo | 2, 3 y 9 | Entrar como `user` | Dashboard con "Panel de usuario", "Bienvenido, [nombre]" en azul y menú Home, Pedidos, Pedidos Ingresados | | |
+| CP06 | Validación | Positivo | 2, 3 y 8 | Entrar como `admin` | Dashboard con "Panel de administrador", "Bienvenido, [nombre]" en azul y menú Home, Productos, Procesamiento de Pedido | | |
+| CP07 | Validación | Positivo | 9 | Con `user`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Ambas cargan normalmente | | |
+| CP08 | Validación | Positivo | 8 | Con `admin`, abrir `productos.html`, `producto-form.html` y `procesamiento.html` por URL | Las tres cargan normalmente | | |
+| CP09 | Validación | Negativo | 10 | Con `user`, abrir `views/productos.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido"; Productos no se ve | | |
+| CP10 | Validación | Negativo | 10 | Con `user`, abrir `producto-form.html` y `procesamiento.html` por URL | Igual que CP09 en ambas | | |
+| CP11 | Validación | Negativo | 10 | Con `admin`, abrir `pedidos.html` y `pedidos-ingresados.html` por URL | Redirige al dashboard y muestra el modal "Acceso restringido" | | |
+| CP12 | Validación | Positivo | 10 | Comparar el modal con `MK_22` (user) y `MK_34` (admin) | Ícono a la izquierda del título, sin borde rojo, botón Volver rojo a la derecha | | |
+| CP13 | Validación | Límite | 10 | En el modal: ver el foco, presionar Tab, Escape y Volver | Foco en Volver; Tab no sale del modal; Escape y Volver lo cierran y se queda en el dashboard | | |
+| CP14 | Validación | Límite | 10 | Tras cerrar el modal, recargar con F5 | El modal no reaparece | | |
+| CP15 | Validación | Límite | 10 | Con `user`, abrir `views/productos.html?x=1#abc` | Se bloquea igual que CP09 | | |
+| CP16 | Validación | Límite | 2 y 10 | Entrar como `admin`, abrir Productos, cerrar sesión y presionar Atrás | No se ve Productos; termina en `index.html` | | |
+| CP17 | Verificación | Positivo | 2 | Botón Cerrar sesión en las 6 vistas, con `user` y con `admin` | Visible arriba a la derecha y vuelve a `index.html` | | |
+| CP18 | Verificación | Positivo | 1 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/validaciones.js` | Sin cambios | | |
+| CP19 | Verificación | Positivo | 2 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos; consola abierta en las 7 páginas | 0 resultados y consola sin errores | | |
+| CP20 | Validación | Límite | 2 | Anchos de 375 y 320 px en el dashboard y en el modal | Encabezado y modal adaptados, sin scroll horizontal | | |
+
 ---
