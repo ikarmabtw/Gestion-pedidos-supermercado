@@ -38,10 +38,10 @@ Reglas del equipo:
 | P2-b|   2   | 2    | Login, bloqueo a 3 intentos y modales| Completado | Carlos|
 | P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | Reemplazado por P3-b | Matías|
 | P3-b|   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|Completado|Matías|
-| P4  |   3   | 4, 5 | Base compartida: datos de prueba, validaciones y modal reutilizable|[pendiente]| [por asignar]|
-| P5  |   3   | 4    | Vista Pedidos: formulario de cliente, validaciones y modales| [pendiente]|[por asignar]|
-| P6  |   3   | 4, 6 | Vista Pedidos Detalle Pedido (buscador, cálculos en CLP, filas y total)| [pendiente]| [por asignar]|
-| P7  |   3   | 5, 9 | Vista Pedidos Ingresados: tabla, selección única y eliminar| [pendiente] | [por asignar]|
+| P4  |   3   | 4, 5 | Base compartida: datos de prueba, validaciones y modal reutilizable|Completado| Carlos|
+| P5  |   3   | 4    | Vista Pedidos: formulario de cliente, validaciones y modales| Completado| Carlos|
+| P6  |   3   | 4, 6 | Vista Pedidos Detalle Pedido (buscador, cálculos en CLP, filas y total)| Completado| Carlos|
+| P7  |   3   | 5, 9 | Vista Pedidos Ingresados: tabla, selección única y eliminar| Completado | Carlos|
 | P8  |   3   | 4, 5 | Editar pedido desde Pedidos Ingresados|[pendiente]|[por asignar]|
 | P9  |   3   | 2    | Tarjetas del dashboard del perfil user | [pendiente] | [por asignar] |
 
@@ -1285,7 +1285,7 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P6-
 
 - **Fecha:** 28-11-2026
 - **Herramienta:** Copilot + Claude + correciones manuales 
-- **Ejecutado por:** [por asignar]
+- **Ejecutado por:** Carlos
 - **Hito / RIU:** Hito 3 / RIU 5 y RIU 9
 - **Origen:** prompt nuevo. Lee los pedidos que guarda el P5 (con el detalle del P6) a través de `js/data.js`. Se alinea con MK_10, MK_11 y MK_12. El botón Editar solo navega a `pedidos.html?editar=[número]`; la carga del formulario es del P8.
 - **Archivos afectados:** `views/pedidos-ingresados.html`, `js/pedidos-ingresados.js` (nuevo) y `css/styles.css` (solo reglas nuevas). No se modifican `js/layout.js`, `js/auth.js`, `js/auth-guard.js` ni los módulos del P4.
@@ -1401,16 +1401,25 @@ Estudiantes de segundo año de Ingeniería Informática, principiantes en desarr
 ```
 
 ### Resultado generado
-[pendiente: se completa después de ejecutar el prompt]
+Copilot generó la vista Pedidos Ingresados con la tabla de pedidos, la selección de una sola fila y los botones Editar y Eliminar. Archivos entregados:
+- views/pedidos-ingresados.html: se reemplazó el marcador .contenedor-vacio por el título con id="titulo-ingresados" y tabindex="-1", el contenedor con scroll horizontal, el texto de ayuda (oculto con el atributo hidden), los botones Editar y Eliminar (deshabilitados) y la etiqueta <script src="../js/pedidos-ingresados.js"> al final.
+- js/pedidos-ingresados.js (179 líneas, nuevo): arma con createElement la tabla con caption oculto, encabezado y una fila por pedido de Datos.listarPedidos(), con casilla, número, nombre, correo, teléfono y total con Validaciones.formatearCLP. Incluye la selección única (al marcar una casilla se desmarcan las demás), la actualización de botones y del texto de ayuda (también con la tabla vacía), el botón Editar (navega a pedidos.html?editar=[número] sin guardar nada) y el botón Eliminar con modal de confirmación que, al confirmar, llama a Datos.eliminarPedido, vuelve a dibujar la tabla aunque devuelva false y pasa el foco al título.
+- css/styles.css: reglas nuevas al final (109 líneas) con las clases .tabla-pedidos* y .ayuda-seleccion: contenedor con scroll, tabla de 640 px mínimo con overflow-wrap en las celdas, casilla propia de 20 × 20 px con relleno azul y marca blanca, foco visible y fila resaltada con --campo.
+No se modificaron js/layout.js, js/auth.js, js/auth-guard.js, js/app.js ni los módulos del P4 (data.js, validaciones.js, modal.js); se verificó con git diff --ignore-space-at-eol. Tampoco se tocaron js/pedidos.js ni js/pedido-detalle.js. El código no usa <style>, onclick, style="", fetch, innerHTML ni almacenamiento del navegador, y los tres archivos quedaron en CRLF.
+
 
 ### Problemas detectados al probarlo
-- [pendiente]
+- Mensaje del modal de eliminación desbordado: con un pedido cuyo nombre tiene 255 caracteres sin espacios, el texto "¿Está seguro de que desea eliminar el Pedido N° ... – [nombre]?" no se parte y se sale del modal por la derecha (el texto llegaba a 2589 px dentro de un cuadro de 311 px a 375 px de ancho; también ocurría a 320 y a 1440 px). La tabla sí resistía el texto largo gracias al overflow-wrap de sus celdas, pero la clase .modal__mensaje (del P4) no tenía esa regla. Los botones Cancelar y Confirmar seguían visibles y la página no tenía scroll horizontal, porque la capa del modal recorta el texto, pero el nombre quedaba cortado.
+- El resto de los casos (tabla con los 5 pedidos de MK_10, selección única, desmarcar, clic fuera de la casilla, modal de MK_12, Cancelar y Escape con la selección intacta, Confirmar, tabla vacía y restablecer, Editar con pedidos.html?editar=1003, teclado, pedido nuevo enviado desde Pedidos que aparece como 1006, redibujo cuando el pedido ya no existe, responsivo a 375 y 320 px sin scroll horizontal de página, bloqueo del perfil admin y redirección sin sesión) dio el resultado esperado, sin errores en consola.
+- Limitaciones que no se corrigieron: (1) el título recibe el foco tras eliminar pero no muestra anillo visible, porque es un encabezado y no un control interactivo; (2) los botones deshabilitados se ven en gris #9E9E9E con texto blanco, no en el gris claro de MK_10, porque viene del estilo .boton:disabled de las vistas anteriores y no del P7; (3) las pruebas automáticas se hicieron en Chromium (Playwright) abriendo los archivos con file://; no se probó en un celular real ni en otros navegadores.
+
+
 
 ### Correcciones manuales
 
 | N° | Problema | Archivo | Corrección | Por qué |
 |----|----------|---------|------------|---------|
-| 1 | | | | |
+| 1 | El mensaje del modal de eliminación se salía del modal cuando el nombre del pedido era un texto largo sin espacios (255 caracteres) | css/styles.css | Se agregó al final del archivo, después de .ayuda-seleccion, la regla `.modal__mensaje { overflow-wrap: anywhere; }` con un comentario "Corrección P7" | El nombre del pedido puede tener hasta 255 caracteres y el modal debe mostrarlo completo y partido dentro de su cuadro. Se agrega una regla nueva sin cambiar la regla existente de .modal__mensaje, como excepción a la condición 8 del prompt (que solo permitía clases .tabla-pedidos y .ayuda-seleccion) |
 
 ### Validación
 
@@ -1418,22 +1427,23 @@ Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P7-
 
 | ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
 |----|------|------|-----|--------|--------------------|----------------|----|
-| CP01 | Validación | Positivo | 5 y 9 | Entrar como `user` y abrir Pedidos Ingresados (con los datos de prueba) | Tabla de MK_10: 5 pedidos (1001 a 1005) con Número Pedido, Nombre Completo, Correo, Teléfono y Total en CLP ($6.900, $8.400, $22.100, $15.990 y $12.750), casilla a la izquierda, el texto "Seleccione un pedido para editar o eliminar" y Editar y Eliminar deshabilitados | | |
-| CP02 | Validación | Positivo | 5 | Marcar la casilla del pedido 1001 | Fila resaltada en celeste (MK_11), Editar (azul) y Eliminar (rojo) habilitados y el texto de ayuda oculto | | |
-| CP03 | Validación | Negativo | 5 | Marcar la casilla del 1001 y luego la del 1002 | Solo queda marcada la del 1002; nunca hay dos filas seleccionadas | | |
-| CP04 | Validación | Límite | 5 | Desmarcar la casilla seleccionada | Ninguna fila queda seleccionada, los dos botones vuelven a deshabilitarse y reaparece el texto de ayuda | | |
-| CP05 | Validación | Negativo | 5 | Hacer clic en el texto de una fila (fuera de la casilla) | No se selecciona nada: solo funciona con la casilla | | |
-| CP06 | Validación | Positivo | 5 | Seleccionar el 1001 y presionar Eliminar | Modal "Eliminar pedido": "¿Está seguro de que desea eliminar el Pedido N° 1001 – María Pérez?" con Cancelar y Confirmar (MK_12) | | |
-| CP07 | Validación | Límite | 5 | En ese modal presionar Cancelar y luego repetir con Escape | El modal se cierra, el pedido sigue en la tabla y la selección se mantiene | | |
-| CP08 | Validación | Positivo | 5 | Presionar Confirmar en el modal de eliminación | El pedido 1001 desaparece, la tabla queda sin selección con los botones deshabilitados y `Datos.listarPedidos().length` es 4 | | |
-| CP09 | Validación | Límite | 5 | Eliminar todos los pedidos de la lista | La tabla muestra "No hay pedidos ingresados." y los botones quedan deshabilitados; con `Datos.restablecer()` y recargar vuelven los 5 | | |
-| CP10 | Validación | Positivo | 5 | Seleccionar el 1003 y presionar Editar | La URL pasa a `pedidos.html?editar=1003` (la carga del formulario se prueba en el P8) | | |
-| CP11 | Validación | Positivo | 4 y 5 | Enviar un pedido nuevo desde Pedidos y abrir Pedidos Ingresados | El pedido nuevo aparece al final de la lista con su número, nombre, correo, teléfono y total | | |
-| CP12 | Validación | Negativo | 5 y 10 | Sin sesión abrir `views/pedidos-ingresados.html`; luego iniciar sesión como `admin` y abrirla | Sin sesión redirige a `index.html`; como admin muestra el modal "Acceso restringido" en el dashboard | | |
-| CP13 | Validación | Límite | 5 | Usar solo teclado: Tab hasta una casilla, Espacio para marcarla, Tab hasta Editar o Eliminar | Se puede seleccionar y accionar con teclado y el foco es visible | | |
-| CP14 | Validación | Límite | 5 | Probar la vista a 375 y 320 px | La tabla se desplaza solo dentro de su contenedor; la página no tiene scroll horizontal | | |
-| CP15 | Verificación | Positivo | 1, 2 y 10 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/auth-guard.js js/data.js js/validaciones.js js/modal.js` | Sin cambios en los 6 archivos | | |
-| CP16 | Verificación | Positivo | 5 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos y consola abierta en Pedidos Ingresados | 0 resultados y consola sin errores | | |
+| CP01 | Validación | Positivo | 5 y 9 | Entrar como `user` y abrir Pedidos Ingresados (con los datos de prueba) | Tabla de MK_10: 5 pedidos (1001 a 1005) con Número Pedido, Nombre Completo, Correo, Teléfono y Total en CLP ($6.900, $8.400, $22.100, $15.990 y $12.750), casilla a la izquierda, el texto "Seleccione un pedido para editar o eliminar" y Editar y Eliminar deshabilitados | Se muestran los 5 pedidos con los totales indicados, la casilla a la izquierda, el texto de ayuda visible y los dos botones deshabilitados. Coincide con MK_10. Captura: `P7-CP01-tabla-sin-seleccion.png` | OK |
+| CP02 | Validación | Positivo | 5 | Marcar la casilla del pedido 1001 | Fila resaltada en celeste (MK_11), Editar (azul) y Eliminar (rojo) habilitados y el texto de ayuda oculto | La fila 1001 se resalta con el color de --campo (rgb 204, 216, 232), los dos botones quedan habilitados y el texto de ayuda se oculta. Coincide con MK_11. Sin captura propia (el estado se ve en `P7-CP03-seleccion-unica.png`) | OK |
+| CP03 | Validación | Negativo | 5 | Marcar la casilla del 1001 y luego la del 1002 | Solo queda marcada la del 1002; nunca hay dos filas seleccionadas | Al marcar el 1002 se desmarca el 1001; solo queda una casilla marcada y una fila resaltada. Captura: `P7-CP03-seleccion-unica.png` | OK |
+| CP04 | Validación | Límite | 5 | Desmarcar la casilla seleccionada | Ninguna fila queda seleccionada, los dos botones vuelven a deshabilitarse y reaparece el texto de ayuda | No queda ninguna casilla marcada ni fila resaltada, los dos botones vuelven a estar deshabilitados y el texto de ayuda reaparece. Sin captura | OK |
+| CP05 | Validación | Negativo | 5 | Hacer clic en el texto de una fila (fuera de la casilla) | No se selecciona nada: solo funciona con la casilla | Un clic en el nombre de una fila y otro en la celda de la casilla (fuera del cuadrado) no seleccionan nada. Sin captura | OK |
+| CP06 | Validación | Positivo | 5 | Seleccionar el 1001 y presionar Eliminar | Modal "Eliminar pedido": "¿Está seguro de que desea eliminar el Pedido N° 1001 – María Pérez?" con Cancelar y Confirmar (MK_12) | Se abre el modal con el título "Eliminar pedido", el mensaje "¿Está seguro de que desea eliminar el Pedido N° 1001 – María Pérez?" y los botones Cancelar y Confirmar; el foco queda en Cancelar. Coincide con MK_12. Captura: `P7-CP06-modal-eliminar.png` | OK |
+| CP07 | Validación | Límite | 5 | En ese modal presionar Cancelar y luego repetir con Escape | El modal se cierra, el pedido sigue en la tabla y la selección se mantiene | Con Cancelar y con Escape el modal se cierra, el pedido 1001 sigue en la tabla y marcado, los botones siguen habilitados y el foco vuelve al botón Eliminar. Sin captura | OK |
+| CP08 | Validación | Positivo | 5 | Presionar Confirmar en el modal de eliminación | El pedido 1001 desaparece, la tabla queda sin selección con los botones deshabilitados y `Datos.listarPedidos().length` es 4 | El pedido 1001 desaparece, la tabla queda con 4 filas, sin selección, con los botones deshabilitados y el texto de ayuda visible; `Datos.listarPedidos().length` es 4 y el foco pasa al título. Sin captura | OK |
+| CP09 | Validación | Límite | 5 | Eliminar todos los pedidos de la lista | La tabla muestra "No hay pedidos ingresados." y los botones quedan deshabilitados; con `Datos.restablecer()` y recargar vuelven los 5 | Tras eliminar los 5 pedidos la tabla muestra una sola fila "No hay pedidos ingresados." que ocupa las 6 columnas, los botones quedan deshabilitados y el texto de ayuda se oculta. Con `Datos.restablecer()` y recargar vuelven los 5. Sin captura | OK |
+| CP10 | Validación | Positivo | 5 | Seleccionar el 1003 y presionar Editar | La URL pasa a `pedidos.html?editar=1003` (la carga del formulario se prueba en el P8) | La URL pasa a `views/pedidos.html?editar=1003`. La carga de los datos en el formulario no se probó porque es del P8. Sin captura | OK |
+| CP11 | Validación | Positivo | 4 y 5 | Enviar un pedido nuevo desde Pedidos y abrir Pedidos Ingresados | El pedido nuevo aparece al final de la lista con su número, nombre, correo, teléfono y total | Se envió desde Pedidos un pedido de Camila Soto Rojas con Arroz Grado 1 (cantidad 2) y se guardó como 1006; en Pedidos Ingresados aparece al final con camila@correo.cl, +56912345678 y $3.000. Sin captura | OK |
+| CP12 | Validación | Negativo | 5 y 10 | Sin sesión abrir `views/pedidos-ingresados.html`; luego iniciar sesión como `admin` y abrirla | Sin sesión redirige a `index.html`; como admin muestra el modal "Acceso restringido" en el dashboard | Sin sesión redirige a `index.html`. Con el perfil admin se redirige al dashboard y se muestra el modal "Acceso restringido" ("No tiene permisos para acceder a esta sección."). Sin captura | OK |
+| CP13 | Validación | Límite | 5 | Usar solo teclado: Tab hasta una casilla, Espacio para marcarla, Tab hasta Editar o Eliminar | Se puede seleccionar y accionar con teclado y el foco es visible | Tab recorre las 5 casillas y salta los botones mientras están deshabilitados; Espacio marca la casilla (anillo de foco de 3 px); con una fila marcada, Enter en Eliminar abre el modal con el foco en Cancelar y Escape devuelve el foco a Eliminar. Sin captura | OK |
+| CP14 | Validación | Límite | 5 | Probar la vista a 375 y 320 px | La tabla se desplaza solo dentro de su contenedor; la página no tiene scroll horizontal | A 375 px y a 320 px el ancho de la página es igual al de la ventana (sin scroll horizontal); la tabla mide 640 px dentro de un contenedor de 343 px y 288 px con su propio scroll. Captura a 375 px: `P7-CP14-responsivo-375.png` | OK |
+| CP15 | Verificación | Positivo | 1, 2 y 10 | `git diff --ignore-space-at-eol js/layout.js js/auth.js js/auth-guard.js js/data.js js/validaciones.js js/modal.js` | Sin cambios en los 6 archivos | Sin salida (sin cambios) en los 6 archivos; tampoco hubo cambios en `js/app.js`. Sin captura | OK |
+| CP16 | Verificación | Positivo | 5 | Búsqueda de `<style`, `onclick`, `style="`, `fetch(` e `innerHTML` en los archivos y consola abierta en Pedidos Ingresados | 0 resultados y consola sin errores | 0 coincidencias en `views/pedidos-ingresados.html` y `js/pedidos-ingresados.js` (tampoco aparecen `aria-checked` ni almacenamiento del navegador); consola sin errores al abrir la vista, seleccionar, eliminar y a 375 y 320 px. Sin captura | OK |
+| CP17 | Validación | Límite | 5 | Guardar un pedido con nombre de 255 caracteres sin espacios, seleccionarlo y presionar Eliminar a 375 px | El mensaje del modal se parte dentro del cuadro y no se sale por el costado | Sin la corrección el texto se salía del modal (2589 px de texto en un cuadro de 311 px). Con la regla `.modal__mensaje { overflow-wrap: anywhere; }` el texto cabe en el cuadro a 1440, 375 y 320 px. Captura: `P7-CP17-modal-nombre-largo.png` | OK |
 
 ---
 
