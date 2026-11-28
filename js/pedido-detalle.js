@@ -286,8 +286,12 @@
             fila.error = resultadoCantidad.mensaje;
         } else if (esCero || (filaEnBlanco(fila))) {
             fila.error = null;
-        } else if (fila.error && resultadoCantidad.valido && fila.producto) {
-            fila.error = null;
+        } else if (fila.error && resultadoCantidad.valido ) {
+            fila.error = fila.producto ? null : "Seleccione un producto.";
+        }
+
+        if (fila.producto && !fila.guardados) {
+            fila.valorUnitario = Number(fila.producto.valor);
         }
 
         fila.textoProducto.textContent = fila.producto ? fila.producto.nombre : "";
