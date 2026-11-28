@@ -1063,3 +1063,112 @@ button:focus-visible {
         width: 112px;
     }
 }
+
+/* Tabla de pedidos ingresados */
+
+.tabla-pedidos-scroll {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.tabla-pedidos {
+    width: 100%;
+    min-width: 640px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: var(--tam-texto);
+}
+
+.tabla-pedidos th,
+.tabla-pedidos td {
+    overflow-wrap: anywhere;
+    border: 1px solid var(--borde-tabla);
+    padding: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tabla-pedidos th {
+    height: 48px;
+    background: var(--azul-marca);
+    color: var(--blanco);
+    font-weight: 600;
+}
+
+.tabla-pedidos th:first-child,
+.tabla-pedidos__celda-seleccion {
+    width: 56px;
+    padding: 6px;
+    text-align: center;
+}
+
+.tabla-pedidos th:nth-child(2) {
+    width: 15%;
+}
+
+.tabla-pedidos th:nth-child(3),
+.tabla-pedidos th:nth-child(4) {
+    width: 24%;
+}
+
+.tabla-pedidos th:nth-child(5) {
+    width: 17%;
+}
+
+.tabla-pedidos th:nth-child(6) {
+    width: 15%;
+}
+
+.tabla-pedidos__derecha {
+    text-align: right !important;
+}
+
+.tabla-pedidos__casilla {
+    position: relative;
+    display: block;
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+    appearance: none;
+    border: 2px solid var(--azul-marca);
+    border-radius: 2px;
+    background: var(--blanco);
+    cursor: pointer;
+}
+
+.tabla-pedidos__casilla:checked {
+    background: var(--azul-marca);
+}
+
+.tabla-pedidos__casilla:checked::after {
+    position: absolute;
+    top: 1px;
+    left: 5px;
+    width: 5px;
+    height: 9px;
+    border-right: 2px solid var(--blanco);
+    border-bottom: 2px solid var(--blanco);
+    content: "";
+    transform: rotate(45deg);
+}
+
+.tabla-pedidos__casilla:focus-visible {
+    outline: 3px solid var(--azul-marca);
+    outline-offset: 3px;
+}
+
+.tabla-pedidos__fila--seleccionada td {
+    background: var(--campo);
+}
+
+.tabla-pedidos__sin-pedidos {
+    text-align: center !important;
+}
+
+.ayuda-seleccion {
+    margin: 12px 0 0;
+    color: var(--texto-secundario);
+    font-size: var(--tam-texto);
+}

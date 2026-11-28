@@ -11,8 +11,15 @@
     <header id="app-header"></header>
 
     <main id="contenido" class="contenido-principal">
-        <h1>Pedidos Ingresados</h1>
-        <div class="contenedor-vacio"></div>
+        <h1 id="titulo-ingresados" tabindex="-1">Pedidos Ingresados</h1>
+        <div id="tabla-pedidos-contenedor" class="tabla-pedidos-scroll"></div>
+        <p id="ayuda-seleccion" class="ayuda-seleccion" hidden>
+            Seleccione un pedido para editar o eliminar
+        </p>
+        <div class="pedido-acciones">
+            <button type="button" id="btn-editar" class="boton boton--azul" disabled>Editar</button>
+            <button type="button" id="btn-eliminar" class="boton boton--rojo" disabled>Eliminar</button>
+        </div>
     </main>
 
     <footer id="app-footer"></footer>
@@ -21,5 +28,6 @@
     <script src="../js/data.js"></script>
     <script src="../js/validaciones.js"></script>
     <script src="../js/modal.js"></script>
+    <script src="../js/pedidos-ingresados.js"></script>
 </body>
 </html>
