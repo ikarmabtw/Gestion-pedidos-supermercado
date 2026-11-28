@@ -37,7 +37,13 @@ Reglas del equipo:
 | P2  |   2   | 2    | Login, bloqueo a 3 intentos y modales | Reemplazado por P2-b |Ivania|
 | P2-b|   2   | 2    | Login, bloqueo a 3 intentos y modales| Completado | Carlos|
 | P3  |   2   | 3, 8, 9, 10 | Perfiles, menús y bloqueo por URL directa | Reemplazado por P3-b | Matías|
-| P3-b  |   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|Completado|Matías|
+| P3-b|   2   | 2, 3, 8, 9, 10| Perfiles, bienvenida por perfil y bloqueo por URL directa|Completado|Matías|
+| P4  |   3   | 4, 5 | Base compartida: datos de prueba, validaciones y modal reutilizable|[pendiente]| [por asignar]|
+| P5  |   3   | 4    | Vista Pedidos: formulario de cliente, validaciones y modales| [pendiente]|[por asignar]|
+| P6  |   3   | 4, 6 | Vista Pedidos Detalle Pedido (buscador, cálculos en CLP, filas y total)| [pendiente]| [por asignar]|
+| P7  |   3   | 5, 9 | Vista Pedidos Ingresados: tabla, selección única y eliminar| [pendiente] | [por asignar]|
+| P8  |   3   | 4, 5 | Editar pedido desde Pedidos Ingresados|[pendiente]|[por asignar]|
+| P9  |   3   | 2    | Tarjetas del dashboard del perfil user | [pendiente] | [por asignar] |
 
 
 ## P1 - Plantilla base HEAD / BODY / FOOT (RIU 1)
@@ -656,3 +662,85 @@ Al comparar el dashboard y el modal con MK_04, MK_05, MK_22 y MK_34:
 | CP20 | Validación | Límite | 2 | Anchos de 375 y 320 px en el dashboard y en el modal | Encabezado y modal adaptados, sin scroll horizontal | A 375 y 320 px el dashboard y el modal "Acceso restringido" aparecen y se adaptan al ancho, sin scroll horizontal; el saludo pasa debajo del título. Capturas: `P3b-CP20-375-modal.png` y `P3b-CP20-320-modal.png`. | Sí |
 
 ---
+
+## P4 - Base compartida: datos de prueba, validaciones y modal reutilizable (RIU 4 y 5, soporte)
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 4 y RIU 5 (soporte de las vistas del perfil user)
+- **Origen:** prompt nuevo. Prepara lo que usarán P5 a P8 para no repetir código: datos, validaciones y modales.
+- **Archivos afectados:** `js/data.js`, `js/validaciones.js`, `js/modal.js` (nuevo) y `css/styles.css` (solo reglas nuevas).
+
+### Prompt completo
+
+```
+[pendiente]
+```
+
+### Resultado generado
+[pendiente: se completa después de ejecutar el prompt]
+
+### Problemas detectados al probarlo
+- [pendiente]
+
+### Correcciones manuales
+
+| N° | Problema | Archivo | Corrección | Por qué |
+|----|----------|---------|------------|---------|
+| 1 | | | | |
+
+### Validación
+
+Las capturas de cada prueba se guardan en `docs/evidencias/` con el formato `P4-CPxx-nombre.png`.
+
+| ID | Tipo | Caso | RIU | Prueba | Resultado esperado | Resultado real | OK |
+|----|------|------|-----|--------|--------------------|----------------|----|
+| CP01 | | | | | | | |
+
+---
+
+## P5 - Vista Pedidos: formulario del cliente, validaciones y modales (RIU 4)
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 4
+- **Origen:** prompt nuevo. Usa `js/validaciones.js` y `js/modal.js` del P4. Se alinea con los mockups MK_06, MK_08, MK_09, MK_23 y MK_26.
+- **Archivos afectados:** `views/pedidos.html`, `js/pedidos.js` y `css/styles.css` (solo reglas nuevas).
+
+## P6 - Vista Pedidos: Detalle Pedido (RIU 4)
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 4 (y regla de cantidad cero del RIU 6)
+- **Origen:** prompt nuevo. Continúa el P5 en la misma vista. Se alinea con MK_07, MK_28, MK_35, MK_36 y MK_36b.
+- **Archivos afectados:** `views/pedidos.html`, `js/pedido-detalle.js` (nuevo) y `css/styles.css` (solo reglas nuevas).
+
+## P7 - Vista Pedidos Ingresados: tabla, selección única y eliminar (RIU 5 y 9)
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 5 y RIU 9
+- **Origen:** prompt nuevo. Lee los pedidos que guarda el P5. Se alinea con MK_10, MK_11 y MK_12.
+- **Archivos afectados:** `views/pedidos-ingresados.html`, `js/pedidos-ingresados.js` (nuevo) y `css/styles.css` (solo reglas nuevas).
+
+## P8 - Editar pedido desde Pedidos Ingresados (RIU 4 y 5)
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 4 y RIU 5
+- **Origen:** prompt nuevo. Une P5, P6 y P7: el botón Editar carga el pedido en Pedidos. Se alinea con MK_27 y MK_29.
+- **Archivos afectados:** `js/pedidos-ingresados.js`, `js/pedidos.js` y `js/pedido-detalle.js`.
+
+## P9 - Tarjetas del dashboard del perfil user (RIU 2), opcional
+
+- **Fecha:** [pendiente]
+- **Herramienta:** [pendiente]
+- **Ejecutado por:** [por asignar]
+- **Hito / RIU:** Hito 3 / RIU 2
+- **Origen:** pendiente que dejó el P3-b ("las tarjetas con cifras se programan en los Hitos 3 y 4"). Se alinea con MK_04.
+- **Archivos afectados:** `js/app.js` y `css/styles.css` (solo reglas nuevas).
