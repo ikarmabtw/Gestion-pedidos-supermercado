@@ -11,8 +11,100 @@
     <header id="app-header"></header>
 
     <main id="contenido" class="contenido-principal">
-        <h1>Pedidos</h1>
-        <div class="contenedor-vacio"></div>
+        <h1 id="titulo-pedidos" tabindex="-1">Pedidos</h1>
+        <p class="login__nota">* Campos obligatorios</p>
+
+        <form id="form-pedido" class="form-pedido" novalidate>
+            <div class="form-pedido__rejilla">
+                <div class="login__campo form-pedido__campo">
+                    <label for="nombre">Nombre completo *</label>
+                    <div class="login__entrada">
+                        <img src="../assets/img/usuario.svg" alt="" aria-hidden="true">
+                        <input id="nombre" name="nombre" type="text" maxlength="255"
+                            autocomplete="name" placeholder="Ej.: María Pérez" required>
+                    </div>
+                    <p class="login__error" id="error-nombre" aria-live="polite"></p>
+                </div>
+
+                <div class="login__campo form-pedido__campo">
+                    <label for="run">RUN *</label>
+                    <div class="login__entrada">
+                        <img src="../assets/img/tarjeta-id.svg" alt="" aria-hidden="true">
+                        <input id="run" name="run" type="text" maxlength="12"
+                            placeholder="Ej.: 12.345.678-K" required>
+                    </div>
+                    <span class="campo-ayuda">
+                        <button type="button" aria-label="Ayuda sobre el RUN"
+                            aria-describedby="tooltip-run">
+                            <img src="../assets/img/ayuda.svg" alt="" aria-hidden="true">
+                        </button>
+                        <span class="tooltip-ayuda" id="tooltip-run" role="tooltip">
+                            Formato esperado: 12.345.678-K
+                        </span>
+                    </span>
+                    <p class="login__error" id="error-run" aria-live="polite"></p>
+                </div>
+
+                <div class="login__campo form-pedido__campo">
+                    <label for="telefono">Teléfono *</label>
+                    <div class="login__entrada">
+                        <img src="../assets/img/telefono.svg" alt="" aria-hidden="true">
+                        <input id="telefono" name="telefono" type="text" inputmode="numeric"
+                            autocomplete="tel" maxlength="13" placeholder="Ej.: +56987654321" required>
+                    </div>
+                    <span class="campo-ayuda">
+                        <button type="button" aria-label="Ayuda sobre el teléfono"
+                            aria-describedby="tooltip-telefono">
+                            <img src="../assets/img/ayuda.svg" alt="" aria-hidden="true">
+                        </button>
+                        <span class="tooltip-ayuda" id="tooltip-telefono" role="tooltip">
+                            Formato esperado: +56987654321
+                        </span>
+                    </span>
+                    <p class="login__error" id="error-telefono" aria-live="polite"></p>
+                </div>
+
+                <div class="login__campo form-pedido__campo">
+                    <label for="correo">Correo electrónico *</label>
+                    <div class="login__entrada">
+                        <img src="../assets/img/correo.svg" alt="" aria-hidden="true">
+                        <input id="correo" name="correo" type="text" inputmode="email"
+                            autocomplete="email" maxlength="255"
+                            placeholder="Ej.: nombre@apellido.cl" required>
+                    </div>
+                    <span class="campo-ayuda">
+                        <button type="button" aria-label="Ayuda sobre el correo electrónico"
+                            aria-describedby="tooltip-correo">
+                            <img src="../assets/img/ayuda.svg" alt="" aria-hidden="true">
+                        </button>
+                        <span class="tooltip-ayuda" id="tooltip-correo" role="tooltip">
+                            Formato esperado: nombre@apellido.cl
+                        </span>
+                    </span>
+                    <p class="login__error" id="error-correo" aria-live="polite"></p>
+                </div>
+
+                <div class="login__campo form-pedido__campo form-pedido__campo--ancho">
+                    <label for="direccion">Dirección *</label>
+                    <div class="login__entrada">
+                        <img src="../assets/img/ubicacion.svg" alt="" aria-hidden="true">
+                        <input id="direccion" name="direccion" type="text" maxlength="255"
+                            autocomplete="street-address" placeholder="Ej.: Av. Libertad 123" required>
+                    </div>
+                    <p class="login__error" id="error-direccion" aria-live="polite"></p>
+                </div>
+            </div>
+
+            <section class="form-pedido__detalle" aria-labelledby="titulo-detalle">
+                <h2 id="titulo-detalle">Detalle Pedido</h2>
+                <div id="detalle-pedido"></div>
+            </section>
+
+            <div class="pedido-acciones">
+                <button type="button" id="btn-borrar" class="boton boton--rojo">Borrar</button>
+                <button type="submit" id="btn-enviar" class="boton boton--azul">Enviar</button>
+            </div>
+        </form>
     </main>
 
     <footer id="app-footer"></footer>
@@ -21,5 +113,6 @@
     <script src="../js/data.js"></script>
     <script src="../js/validaciones.js"></script>
     <script src="../js/modal.js"></script>
+    <script src="../js/pedidos.js"></script>
 </body>
 </html>

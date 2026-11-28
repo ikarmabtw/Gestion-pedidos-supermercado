@@ -606,3 +606,151 @@ button:focus-visible {
         width: 100%;
     }
 }
+
+/* Formulario de la vista Pedidos */
+
+.form-pedido {
+    width: 100%;
+}
+
+.form-pedido__rejilla {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+}
+
+.form-pedido__campo {
+    position: relative;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-content: start;
+    column-gap: 8px;
+    min-width: 0;
+}
+
+.form-pedido__campo label {
+    grid-column: 1;
+    grid-row: 1;
+    margin-bottom: 5px;
+}
+
+.form-pedido__campo > .login__entrada {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+}
+
+.form-pedido__campo > .login__error {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.form-pedido__campo > .login__error:empty {
+    display: none;
+}
+
+.form-pedido__campo > .login__error img {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+}
+
+.form-pedido__campo--ancho {
+    grid-column: 1 / -1;
+}
+
+.login__entrada--error {
+    border-color: var(--rojo);
+}
+
+.form-pedido__alerta-entrada {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+}
+
+.campo-ayuda {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+}
+
+.campo-ayuda button {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    cursor: help;
+    padding: 0;
+}
+
+.campo-ayuda button img {
+    width: 20px;
+    height: 20px;
+}
+
+.tooltip-ayuda {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    display: none;
+    width: max-content;
+    max-width: min(280px, calc(100vw - 32px));
+    border-radius: 4px;
+    background: var(--azul-marca);
+    color: var(--blanco);
+    font-size: var(--tam-texto);
+    padding: 8px 10px;
+    transform: translateY(-100%);
+}
+
+.campo-ayuda:hover .tooltip-ayuda,
+.campo-ayuda:focus-within .tooltip-ayuda {
+    display: block;
+}
+
+.form-pedido__detalle {
+    margin-top: 8px;
+}
+
+.form-pedido__detalle h2 {
+    margin: 0 0 16px;
+    font-size: var(--tam-titulo);
+    font-weight: 600;
+}
+
+.pedido-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+@media (max-width: 700px) {
+    .form-pedido__rejilla {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .form-pedido__campo--ancho {
+        grid-column: auto;
+    }
+
+    .pedido-acciones {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 375px) {
+    .pedido-acciones {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
